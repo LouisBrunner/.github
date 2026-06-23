@@ -1,0 +1,22 @@
+name: Lint TOML
+
+on:
+  workflow_call:
+
+jobs:
+  lint:
+    name: Tombi
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Set up Tombi
+        uses: tombi-toml/setup-tombi@90dc1ab19ff45cc28017aab8cd0093516d908532 # v1.1.5
+        with:
+          enable-cache: true
+
+      - name: Check formatting and lint
+        run: |
+          tombi format --check --diff
+          tombi lint --error-on-warnings

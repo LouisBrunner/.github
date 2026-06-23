@@ -1,0 +1,45 @@
+name: Lint UV
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: "Python version to use (empty = auto from .python-version or pyproject.toml)"
+        type: string
+        default: ""
+      run:
+        description: "Lint command to run (empty = default: ruff check + format + ty check)."
+        type: string
+        default: ""
+
+jobs:
+  lint:
+    name: Vet
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        with:
+          python-version: ${{ inputs.python-version }}
+          enable-cache: true
+
+      - name: Sync dependencies
+        shell: bash
+        run: uv sync --all-packages
+
+      - name: Vet
+        shell: bash
+        env:
+          CUSTOM_RUN: ${{ inputs.run }}
+        run: |
+          if [ -n "$CUSTOM_RUN" ]; then
+            # FIXME: eval... need to be careful with those
+            eval "$CUSTOM_RUN"
+          else
+            uv run ruff check .
+            uv run ruff format --diff .
+            uv run ty check .
+          fi

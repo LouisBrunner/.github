@@ -1,0 +1,27 @@
+name: Deploy to GitHub Pages
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: "Name of the artifact uploaded by the build job (upload-pages-artifact default: 'github-pages')"
+        type: string
+        default: "github-pages"
+    outputs:
+      url:
+        description: "URL of the deployed GitHub Pages site"
+        value: ${{ jobs.deploy.outputs.url }}
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    outputs:
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

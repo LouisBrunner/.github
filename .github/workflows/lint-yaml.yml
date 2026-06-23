@@ -1,0 +1,44 @@
+name: Lint YAML
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        description: "Path to lint (default: entire repo)"
+        type: string
+        default: "."
+      config-data:
+        description: "yamllint config YAML (empty = write built-in default config)"
+        type: string
+        default: ""
+
+jobs:
+  lint:
+    name: yamllint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Write default config
+        if: ${{ inputs.config-data == '' }}
+        run: |
+          if [ -f .yamllint.yaml ] || [ -f .yamllint.yml ]; then
+            echo "Using existing .yamllint.yaml"
+            exit
+          fi
+          cat > .yamllint.yaml << 'EOF'
+          extends: default
+          rules:
+            line-length:
+              max: 120
+              level: error
+            document-start: disable
+            truthy: disable
+          EOF
+
+      - name: Lint YAML files
+        uses: ibiqlik/action-yamllint@2576378a8e339169678f9939646ee3ee325e845c # v3.1.1
+        with:
+          file_or_dir: ${{ inputs.path }}
+          config_data: ${{ inputs.config-data }}

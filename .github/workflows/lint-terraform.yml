@@ -1,0 +1,64 @@
+name: Lint Terraform
+
+on:
+  workflow_call:
+    inputs:
+      terraform-version:
+        description: "Terraform version to use"
+        type: string
+        default: "1.8.4"
+      terragrunt-version:
+        description: "Terragrunt version to use"
+        type: string
+        default: "0.99.2"
+      skip-terragrunt:
+        description: "Skip all Terragrunt steps."
+        type: boolean
+        default: false
+      hcl-validate:
+        description: "Run terragrunt hcl validate."
+        type: boolean
+        default: false
+      run:
+        description: "Lint command to run (empty = default: terragrunt hclfmt + terraform fmt)."
+        type: string
+        default: ""
+
+jobs:
+  lint:
+    name: fmt
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: ${{ inputs.terraform-version }}
+
+      - name: Set up Terragrunt
+        if: ${{ !inputs.skip-terragrunt }}
+        uses: autero1/action-terragrunt@aefb0a43c4f5503a91fefb307745c4d51c26ed0e # v3.0.2
+        with:
+          terragrunt-version: ${{ inputs.terragrunt-version }}
+
+      - name: Lint
+        shell: bash
+        env:
+          CUSTOM_RUN: ${{ inputs.run }}
+          SKIP_TERRAGRUNT: ${{ inputs.skip-terragrunt }}
+          HCL_VALIDATE: ${{ inputs.hcl-validate }}
+        run: |
+          if [ -n "$CUSTOM_RUN" ]; then
+            # FIXME: eval... need to be careful with those
+            eval "$CUSTOM_RUN"
+          else
+            terraform fmt -recursive -check -diff
+            if [ "$SKIP_TERRAGRUNT" != "true" ]; then
+              terragrunt hcl fmt --check --diff
+              if [ "$HCL_VALIDATE" == "true" ]; then
+                terragrunt hcl validate
+              fi
+            fi
+          fi

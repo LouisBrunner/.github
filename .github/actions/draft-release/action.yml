@@ -1,0 +1,53 @@
+name: Draft release
+description: >
+  Create a GitHub draft release for the given version if that tag does not already
+  exist. Caller must checkout the repository first and derive the version themselves.
+
+inputs:
+  version:
+    description: "Version string without the tag prefix (e.g. '1.2.3')."
+    required: true
+  tag-prefix:
+    description: "Prefix prepended to the version when forming the tag."
+    required: false
+    default: "v"
+  draft:
+    description: "Create the release as a draft."
+    required: false
+    default: "true"
+
+outputs:
+  tag:
+    description: "The full tag that was checked or created (prefix + version)."
+    value: ${{ steps.release.outputs.tag }}
+  created:
+    description: "'true' if a new release was created, 'false' if it already existed."
+    value: ${{ steps.release.outputs.created }}
+
+runs:
+  using: composite
+  steps:
+    - name: Create draft release if needed
+      id: release
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        VERSION: ${{ inputs.version }}
+        TAG_PREFIX: ${{ inputs.tag-prefix }}
+        DRAFT: ${{ inputs.draft }}
+      run: |
+        TAG="${TAG_PREFIX}${VERSION}"
+        echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+        if gh release view "${TAG}" &>/dev/null; then
+          echo "Release ${TAG} already exists, skipping"
+          echo "created=false" >> "$GITHUB_OUTPUT"
+        else
+          DRAFT_FLAG=()
+          if [ "${DRAFT}" == "true" ]; then
+            DRAFT_FLAG=(--draft)
+          fi
+          gh release create "${TAG}" "${DRAFT_FLAG[@]}" \
+            --title "${TAG}" \
+            --generate-notes
+          echo "created=true" >> "$GITHUB_OUTPUT"
+        fi

@@ -1,0 +1,44 @@
+name: Lint Markdown
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        description: "Path glob to check (default: entire repo)"
+        type: string
+        default: "**/*.{md,markdown}"
+      config:
+        description: "Inline markdownlint config JSON (empty = write built-in default config)"
+        type: string
+        default: ""
+      configPointer:
+        description: "Path to use inside the config file (empty = use root)"
+        type: string
+        default: ""
+
+jobs:
+  lint:
+    name: markdownlint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Write default config
+        if: ${{ inputs.config == '' }}
+        run: |
+          if [ -f .markdownlint.yaml ] || [ -f .markdownlint.yml ]; then
+            exit
+          fi
+          cat > .markdownlint.yaml << 'EOF'
+          MD013:
+            line_length: 200
+            code_blocks: false
+          EOF
+
+      - name: Lint Markdown files
+        uses: DavidAnson/markdownlint-cli2-action@ded1f9488f68a970bc66ea5619e13e9b52e601cd # v23.2.0
+        with:
+          globs: ${{ inputs.path }}
+          config: ${{ inputs.config }}
+          configPointer: ${{ inputs.configPointer }}

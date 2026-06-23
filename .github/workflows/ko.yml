@@ -1,0 +1,64 @@
+name: Build and push with ko
+
+on:
+  workflow_call:
+    inputs:
+      go-version-file:
+        description: "Path to go.mod to derive the Go version."
+        type: string
+        default: "go.mod"
+      ko-version:
+        description: "ko version to install."
+        type: string
+        default: "v0.15.4"
+      registry:
+        description: "Container registry to log in to."
+        type: string
+        required: true
+      registry-username:
+        description: "Username for the container registry."
+        type: string
+        required: true
+      run:
+        description: "Command to run after setup (empty = skip)."
+        type: string
+        default: ""
+    secrets:
+      registry-password:
+        description: "Password or token for the container registry."
+        required: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Set up Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: ${{ inputs.go-version-file }}
+          cache: true
+
+      - name: Set up ko
+        uses: ko-build/setup-ko@d006021bd0c28d1ce33a07e7943d48b079944c8d # v0.9
+        with:
+          version: ${{ inputs.ko-version }}
+
+      - name: Login to container registry
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3
+        with:
+          registry: ${{ inputs.registry }}
+          username: ${{ inputs.registry-username }}
+          password: ${{ secrets.registry-password }}
+
+      - name: Run
+        if: ${{ inputs.run != '' }}
+        shell: bash
+        env:
+          CUSTOM_RUN: ${{ inputs.run }}
+        run: |
+          # FIXME: eval... need to be careful with those
+          eval "$CUSTOM_RUN"
