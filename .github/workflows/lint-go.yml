@@ -1,0 +1,41 @@
+name: Lint Go
+
+on:
+  workflow_call:
+    inputs:
+      go-version-file:
+        description: "Path to go.mod to derive the Go version."
+        type: string
+        default: "go.mod"
+      run:
+        description: "Lint command to run (empty = default: gofmt + vet + staticcheck)."
+        type: string
+        default: ""
+
+jobs:
+  lint:
+    name: Vet
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Set up Go
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+        with:
+          go-version-file: ${{ inputs.go-version-file }}
+          cache: true
+
+      - name: Vet
+        shell: bash
+        env:
+          CUSTOM_RUN: ${{ inputs.run }}
+        run: |
+          if [ -n "$CUSTOM_RUN" ]; then
+            # FIXME: eval... need to be careful with those
+            eval "$CUSTOM_RUN"
+          else
+            gofmt -d -e -s . | tee /dev/stderr | awk 'END { if (NR > 0) { exit 1 } }'
+            go vet ./...
+            go tool honnef.co/go/tools/cmd/staticcheck ./...
+          fi

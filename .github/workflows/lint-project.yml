@@ -1,0 +1,58 @@
+name: Lint project
+
+on:
+  workflow_call:
+    inputs:
+      type:
+        description: "Project type: 'go', 'bun', 'uv', or 'rust'"
+        type: string
+        required: true
+      config-go:
+        description: "JSON overrides for lint-go (keys: go-version-file, run)"
+        type: string
+        default: "{}"
+      config-bun:
+        description: "JSON overrides for lint-bun (keys: bun-version, run)"
+        type: string
+        default: "{}"
+      config-uv:
+        description: "JSON overrides for lint-uv (keys: python-version, run)"
+        type: string
+        default: "{}"
+      config-rust:
+        description: "JSON overrides for lint-rust (keys: toolchain, run)"
+        type: string
+        default: "{}"
+
+jobs:
+  go:
+    name: Go
+    if: ${{ inputs.type == 'go' }}
+    uses: LouisBrunner/.github/.github/workflows/lint-go.yml@main
+    with:
+      go-version-file: ${{ fromJSON(inputs.config-go)['go-version-file'] || 'go.mod' }}
+      run: ${{ fromJSON(inputs.config-go).run || '' }}
+
+  bun:
+    name: Bun
+    if: ${{ inputs.type == 'bun' }}
+    uses: LouisBrunner/.github/.github/workflows/lint-bun.yml@main
+    with:
+      bun-version: ${{ fromJSON(inputs.config-bun)['bun-version'] || '' }}
+      run: ${{ fromJSON(inputs.config-bun).run || '' }}
+
+  uv:
+    name: UV
+    if: ${{ inputs.type == 'uv' }}
+    uses: LouisBrunner/.github/.github/workflows/lint-uv.yml@main
+    with:
+      python-version: ${{ fromJSON(inputs.config-uv)['python-version'] || '' }}
+      run: ${{ fromJSON(inputs.config-uv).run || '' }}
+
+  rust:
+    name: Rust
+    if: ${{ inputs.type == 'rust' }}
+    uses: LouisBrunnel/.github/.github/workflows/lint-rust.yml@main
+    with:
+      toolchain: ${{ fromJSON(inputs.config-rust).toolchain || 'stable' }}
+      run: ${{ fromJSON(inputs.config-rust).run || '' }}

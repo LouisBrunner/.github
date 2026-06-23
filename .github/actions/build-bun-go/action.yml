@@ -1,0 +1,46 @@
+name: Build Bun+Go project
+description: >
+  Install dependencies and build a Bun project that uses Go (esbuild) internally.
+  Caller must checkout the repository first.
+
+inputs:
+  bun-version:
+    description: "Bun version to use (empty = latest stable)"
+    required: false
+    default: ""
+  go-version-file:
+    description: "Path to go.mod to derive the Go version"
+    required: false
+    default: "go.mod"
+  run:
+    description: "Command to run (empty = default: bun install + bun run build)."
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Bun
+      uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      with:
+        bun-version: ${{ inputs.bun-version != '' && inputs.bun-version || 'latest' }}
+        no-cache: false
+
+    - name: Set up Go
+      uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+      with:
+        go-version-file: ${{ inputs.go-version-file }}
+        cache: true
+
+    - name: Build
+      shell: bash
+      env:
+        CUSTOM_RUN: ${{ inputs.run }}
+      run: |
+        if [ -n "$CUSTOM_RUN" ]; then
+          # FIXME: eval... need to be careful with those
+          eval "$CUSTOM_RUN"
+        else
+          bun install
+          bun run build
+        fi

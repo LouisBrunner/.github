@@ -1,0 +1,34 @@
+name: Lint YAML
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        description: "Path to lint (default: entire repo)"
+        type: string
+        default: "."
+      config-data:
+        description: "yamllint config YAML (empty string falls back to any .yamllint* in the repo)"
+        type: string
+        default: |
+          extends: default
+          rules:
+            line-length:
+              max: 120
+              level: warning
+            document-start: disable
+            truthy: disable
+
+jobs:
+  lint:
+    name: yamllint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Lint YAML files
+        uses: ibiqlik/action-yamllint@2576378a8e339169678f9939646ee3ee325e845c # v3.1.1
+        with:
+          file_or_dir: ${{ inputs.path }}
+          config_data: ${{ inputs.config-data }}

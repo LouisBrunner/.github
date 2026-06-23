@@ -1,0 +1,53 @@
+name: Auto-dismiss Dependabot alerts
+
+on:
+  workflow_call:
+    inputs:
+      alert-number:
+        description: "Alert number from github.event.alert.number."
+        type: number
+        required: true
+      package-name:
+        description: "Package name from github.event.alert.dependency.package.name."
+        type: string
+        required: true
+      ignore-packages:
+        description: "JSON array of package names to auto-dismiss (e.g. '[\"homeassistant\"]')."
+        type: string
+        required: true
+      dismissed-reason:
+        description: "Dismissal reason: not_used | inaccurate | tolerable_risk | no_bandwidth | fix_started."
+        type: string
+        default: "not_used"
+      dismissed-comment:
+        description: "Human-readable comment explaining why."
+        type: string
+        default: ""
+
+jobs:
+  dismiss:
+    name: Dismiss if in ignore list
+    runs-on: ubuntu-24.04
+    permissions:
+      security-events: write
+    steps:
+      - name: Dismiss alert
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ALERT_NUMBER: ${{ inputs.alert-number }}
+          PACKAGE: ${{ inputs.package-name }}
+          IGNORE: ${{ inputs.ignore-packages }}
+          REASON: ${{ inputs.dismissed-reason }}
+          COMMENT: ${{ inputs.dismissed-comment }}
+        run: |
+          if echo "${IGNORE}" | jq -e --arg pkg "${PACKAGE}" 'index($pkg) != null' > /dev/null; then
+            echo "Package ${PACKAGE} is in ignore list — dismissing alert #${ALERT_NUMBER}"
+            gh api --method PATCH \
+              "repos/${REPOSITORY}/dependabot/alerts/${ALERT_NUMBER}" \
+              -f state=dismissed \
+              -f dismissed_reason="${REASON}" \
+              -f dismissed_comment="${COMMENT}"
+          else
+            echo "Package ${PACKAGE} is not in ignore list — leaving alert open"
+          fi

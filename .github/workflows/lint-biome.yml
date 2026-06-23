@@ -1,0 +1,31 @@
+name: Lint Biome
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        description: "Path to lint (default: entire repo)"
+        type: string
+        default: "."
+      version:
+        description: "Biome version to use"
+        type: string
+        default: "2.5.0"
+
+jobs:
+  lint:
+    name: Biome
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Set up Biome
+        uses: biomejs/setup-biome@4c91541eaada48f67d7dbd7833600ce162b68f51 # v2.7.1
+        with:
+          version: ${{ inputs.version }}
+
+      - name: Lint and format
+        env:
+          INPUT_PATH: ${{ inputs.path }}
+        run: biome ci "$INPUT_PATH"

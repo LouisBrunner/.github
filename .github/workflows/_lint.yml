@@ -1,0 +1,23 @@
+name: Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  yaml:
+    uses: ./.github/workflows/lint-yaml.yml
+
+  biome:
+    uses: ./.github/workflows/lint-biome.yml
+
+  toml:
+    uses: ./.github/workflows/lint-toml.yml
+
+  markdown:
+    uses: ./.github/workflows/lint-markdown.yml

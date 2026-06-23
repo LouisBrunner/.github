@@ -1,0 +1,67 @@
+name: Lint configs
+
+on:
+  workflow_call:
+    inputs:
+      run-yaml:
+        description: "Run yamllint"
+        type: boolean
+        default: true
+      yaml:
+        description: "JSON overrides for lint-yaml (keys: path, config-data)"
+        type: string
+        default: "{}"
+      run-biome:
+        description: "Run Biome (JSON/HTML/JS/TS/CSS)"
+        type: boolean
+        default: true
+      biome:
+        description: "JSON overrides for lint-biome (keys: path, version)"
+        type: string
+        default: "{}"
+      run-toml:
+        description: "Run Tombi (requires tombi.toml in repo root)"
+        type: boolean
+        default: false
+      toml:
+        description: "JSON overrides for lint-toml (currently no overrides supported)"
+        type: string
+        default: "{}"
+      run-markdown:
+        description: "Run markdownlint"
+        type: boolean
+        default: true
+      markdown:
+        description: "JSON overrides for lint-markdown (keys: path, config)"
+        type: string
+        default: "{}"
+
+jobs:
+  yaml:
+    name: YAML
+    if: ${{ inputs.run-yaml }}
+    uses: LouisBrunner/.github/.github/workflows/lint-yaml.yml@main
+    with:
+      path: ${{ fromJSON(inputs.yaml).path || '.' }}
+      config-data: ${{ fromJSON(inputs.yaml)['config-data'] || '' }}
+
+  biome:
+    name: Biome
+    if: ${{ inputs.run-biome }}
+    uses: LouisBrunner/.github/.github/workflows/lint-biome.yml@main
+    with:
+      path: ${{ fromJSON(inputs.biome).path || '.' }}
+      version: ${{ fromJSON(inputs.biome).version || '2.5.0' }}
+
+  toml:
+    name: TOML
+    if: ${{ inputs.run-toml }}
+    uses: LouisBrunner/.github/.github/workflows/lint-toml.yml@main
+
+  markdown:
+    name: Markdown
+    if: ${{ inputs.run-markdown }}
+    uses: LouisBrunner/.github/.github/workflows/lint-markdown.yml@main
+    with:
+      path: ${{ fromJSON(inputs.markdown).path || '**/*.{md,markdown}' }}
+      config: ${{ fromJSON(inputs.markdown).config || '' }}

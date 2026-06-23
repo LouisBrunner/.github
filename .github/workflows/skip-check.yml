@@ -1,0 +1,31 @@
+name: Skip check
+
+on:
+  workflow_call:
+    inputs:
+      paths:
+        description: "JSON array of path globs to watch (e.g. '[\"**/*.go\"]')."
+        type: string
+        required: true
+      do-not-skip:
+        description: "JSON array of event names that must never be skipped."
+        type: string
+        default: '["workflow_dispatch"]'
+    outputs:
+      should_skip:
+        description: "'true' if this run is a duplicate and should be skipped."
+        value: ${{ jobs.pre.outputs.should_skip }}
+
+jobs:
+  pre:
+    name: Check for changes
+    runs-on: ubuntu-24.04
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - name: Check for duplicate runs
+        id: skip_check
+        uses: fkirc/skip-duplicate-actions@f75f66ce1886f00957d99748a42c724f4330bdcf # v5.3.1
+        with:
+          paths: ${{ inputs.paths }}
+          do_not_skip: ${{ inputs.do-not-skip }}
