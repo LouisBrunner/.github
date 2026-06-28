@@ -10,6 +10,7 @@ jobs:
     permissions:
       contents: read
       statuses: write
+      pull-requests: write
     steps:
       - name: Checkout the repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -17,7 +18,47 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Write default yamllint config
+        run: |
+          if [ -f .yamllint.yaml ] || [ -f .yamllint.yml ]; then
+            exit
+          fi
+          cat > .yamllint.yaml << 'EOF'
+          extends: default
+          rules:
+            line-length:
+              max: 120
+              level: error
+            document-start: disable
+            truthy: disable
+          EOF
+
+      - name: Write default markdownlint config
+        run: |
+          if [ -f .markdownlint.yaml ] || [ -f .markdownlint.yml ]; then
+            exit
+          fi
+          cat > .markdownlint.yaml << 'EOF'
+          MD013:
+            line_length: 200
+            code_blocks: false
+            tables: false
+          EOF
+
       - name: Lint
         uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUST_CLIPPY_COMMAND_OPTIONS: -- -D warnings
+          YAML_CONFIG_FILE: .yamllint.yaml
+          YAML_ERROR_ON_WARNING: true
+          MARKDOWN_CONFIG_FILE: .markdownlint.yaml
+          # overall, we do not want prettier
+          VALIDATE_CSS_PRETTIER: false
+          VALIDATE_JAVASCRIPT_PRETTIER: false
+          VALIDATE_JSON_PRETTIER: false
+          VALIDATE_JSONC_PRETTIER: false
+          VALIDATE_JSX_PRETTIER: false
+          VALIDATE_MARKDOWN_PRETTIER: false
+          VALIDATE_TYPESCRIPT_PRETTIER: false
+          VALIDATE_YAML_PRETTIER: false

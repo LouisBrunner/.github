@@ -11,4 +11,8 @@ concurrency:
 
 jobs:
   configs:
+    permissions:
+      contents: read
+      statuses: write
+      pull-requests: write
     uses: ./.github/workflows/lint-configs.yml
