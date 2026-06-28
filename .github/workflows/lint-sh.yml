@@ -7,6 +7,10 @@ on:
         description: "Root path to search for shell scripts (default: entire repo)"
         type: string
         default: "."
+      additional-files:
+        description: "Extra files to check regardless of shebang (space-separated paths)"
+        type: string
+        default: ""
       shellcheck-options:
         description: "Additional options to pass to shellcheck"
         type: string
@@ -33,8 +37,20 @@ jobs:
         with:
           shfmt-version: ${{ inputs.shfmt-version }}
 
+      - name: Gather additional shell scripts
+        id: extra
+        run: |
+          by_directive=$(find "${{ inputs.path }}" -type f ! -name "*.*" | xargs grep -lE '# shellcheck shell=' 2>/dev/null | tr '\n' ' ')
+          extra=$(echo "${{ inputs.additional-files }} $by_directive" | tr ' ' '\n' | sort -u | grep -v '^$' | tr '\n' ' ')
+          suffixes=$(echo "$extra" | tr ' ' '\n' | grep -v '^$' | xargs -r -n1 basename | sort -u | tr '\n' ' ')
+          echo "files=$extra" >> "$GITHUB_OUTPUT"
+          echo "suffixes=$suffixes" >> "$GITHUB_OUTPUT"
+
       - name: Check formatting (shfmt)
-        run: shfmt --diff "${{ inputs.path }}"
+        run: |
+          shfmt --diff "${{ inputs.path }}"
+          extra="${{ steps.extra.outputs.files }}"
+          test -z "$extra" || shfmt --language-dialect bash --diff $extra
 
       - name: Lint (shellcheck)
         uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # v2.0.0
@@ -43,3 +59,4 @@ jobs:
         with:
           scandir: ${{ inputs.path }}
           version: ${{ inputs.shellcheck-version }}
+          additional_files: ${{ steps.extra.outputs.suffixes }}

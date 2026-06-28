@@ -1,0 +1,34 @@
+name: Lint Docker
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        description: "Root path to search for Dockerfiles (default: entire repo)"
+        type: string
+        default: "."
+      dockerfmt-version:
+        description: "dockerfmt version to install"
+        type: string
+        default: "v0.5.4"
+
+jobs:
+  lint:
+    name: dockerfmt
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Install dockerfmt
+        run: |
+          version="${{ inputs.dockerfmt-version }}"
+          curl -fsSL "https://github.com/reteps/dockerfmt/releases/download/${version}/dockerfmt-${version}-linux-amd64.tar.gz" \
+            | tar -xz -C /usr/local/bin dockerfmt
+
+      - name: Check formatting (dockerfmt)
+        run: |
+          mapfile -t files < <(find "${{ inputs.path }}" -type f \( -name 'Dockerfile' -o -name 'Dockerfile.*' \))
+          if [ ${#files[@]} -gt 0 ]; then
+            dockerfmt --check "${files[@]}"
+          fi

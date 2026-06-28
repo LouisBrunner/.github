@@ -1,0 +1,23 @@
+name: Lint GitHub Actions
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: "actionlint version to install (no v prefix)"
+        type: string
+        default: "1.7.12"
+
+jobs:
+  lint:
+    name: actionlint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Install actionlint
+        run: bash <(curl -s https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash) ${{ inputs.version }}
+
+      - name: Lint GitHub Actions workflows
+        run: actionlint

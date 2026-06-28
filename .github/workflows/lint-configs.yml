@@ -43,6 +43,22 @@ on:
         description: "JSON overrides for lint-sh (keys: path, shfmt-version, shellcheck-version)"
         type: string
         default: "{}"
+      run-docker:
+        description: "Run dockerfmt"
+        type: boolean
+        default: true
+      docker:
+        description: "JSON overrides for lint-docker (keys: path, dockerfmt-version)"
+        type: string
+        default: "{}"
+      run-gha:
+        description: "Run actionlint"
+        type: boolean
+        default: true
+      gha:
+        description: "JSON overrides for lint-gha (keys: version)"
+        type: string
+        default: "{}"
 
 jobs:
   yaml-skip:
@@ -117,3 +133,36 @@ jobs:
       path: ${{ fromJSON(inputs.sh).path || '.' }}
       shfmt-version: ${{ fromJSON(inputs.sh)['shfmt-version'] || '3.13.1' }}
       shellcheck-version: ${{ fromJSON(inputs.sh)['shellcheck-version'] || 'v0.11.0' }}
+
+  docker-skip:
+    name: Docker skip check
+    uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
+    with:
+      paths: '["**/Dockerfile", "**/Dockerfile.*"]'
+
+  docker:
+    name: Docker
+    needs: docker-skip
+    if: ${{ inputs.run-docker && needs.docker-skip.outputs.should_skip != 'true' }}
+    uses: LouisBrunner/.github/.github/workflows/lint-docker.yml@main
+    with:
+      path: ${{ fromJSON(inputs.docker).path || '.' }}
+      dockerfmt-version: ${{ fromJSON(inputs.docker)['dockerfmt-version'] || 'v0.5.4' }}
+
+  gha-skip:
+    name: GHA skip check
+    uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
+    with:
+      paths: '[".github/**"]'
+
+  gha:
+    name: GHA
+    needs: gha-skip
+    if: ${{ inputs.run-gha && needs.gha-skip.outputs.should_skip != 'true' }}
+    uses: LouisBrunner/.github/.github/workflows/lint-gha.yml@main
+    with:
+      version: ${{ fromJSON(inputs.gha).version || '1.7.12' }}
+
+  super-linter:
+    name: Super Linter
+    uses: LouisBrunner/.github/.github/workflows/lint-super.yml@main
