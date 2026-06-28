@@ -59,6 +59,10 @@ on:
         description: "JSON overrides for lint-gha (keys: version)"
         type: string
         default: "{}"
+      run-super:
+        description: "Run super-linter"
+        type: boolean
+        default: true
 
 jobs:
   yaml-skip:
@@ -165,4 +169,5 @@ jobs:
 
   super-linter:
     name: Super Linter
+    if: ${{ inputs.run-super }}
     uses: LouisBrunner/.github/.github/workflows/lint-super.yml@main
