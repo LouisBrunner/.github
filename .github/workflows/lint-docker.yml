@@ -11,6 +11,10 @@ on:
         description: "dockerfmt version to install"
         type: string
         default: "v0.5.4"
+      options:
+        description: "Extra options to pass to dockerfmt"
+        type: string
+        default: "--newline -i 2"
 
 jobs:
   lint:
@@ -30,5 +34,5 @@ jobs:
         run: |
           mapfile -t files < <(find "${{ inputs.path }}" -type f \( -name 'Dockerfile' -o -name 'Dockerfile.*' \))
           if [ ${#files[@]} -gt 0 ]; then
-            dockerfmt --check "${files[@]}"
+            dockerfmt --check ${{ inputs.options }} "${files[@]}"
           fi

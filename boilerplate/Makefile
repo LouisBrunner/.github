@@ -105,14 +105,15 @@ format-sh:
 
 # Docker
 DOCKER_FILES := $(shell git ls-files | grep -E '(^|/)Dockerfile(\..+)?$$')
+DOCKERFMT_OPTS ?= --newline -i 2
 
 .PHONY: lint-docker
 lint-docker:
-	dockerfmt --check $(DOCKER_FILES)
+	dockerfmt --check $(DOCKERFMT_OPTS) $(DOCKER_FILES)
 
 .PHONY: format-docker
 format-docker:
-	dockerfmt --write $(DOCKER_FILES)
+	dockerfmt --write $(DOCKERFMT_OPTS) $(DOCKER_FILES)
 
 # GitHub Actions
 .PHONY: lint-gha

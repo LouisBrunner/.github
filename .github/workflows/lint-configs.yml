@@ -48,7 +48,7 @@ on:
         type: boolean
         default: true
       docker:
-        description: "JSON overrides for lint-docker (keys: path, dockerfmt-version)"
+        description: "JSON overrides for lint-docker (keys: path, dockerfmt-version, options)"
         type: string
         default: "{}"
       run-gha:
@@ -152,6 +152,7 @@ jobs:
     with:
       path: ${{ fromJSON(inputs.docker).path || '.' }}
       dockerfmt-version: ${{ fromJSON(inputs.docker)['dockerfmt-version'] || 'v0.5.4' }}
+      options: ${{ fromJSON(inputs.docker).options || '--newline -i 2' }}
 
   gha-skip:
     name: GHA skip check
