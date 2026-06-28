@@ -85,10 +85,15 @@ format-md:
 	markdownlint-cli2 --fix '**/*.{md,markdown}'
 
 # Shell
+SHELLCHECK_OPTS ?=
+ifdef SHELL_ROOT
+SHELLCHECK_OPTS += -P $(SHELL_ROOT)
+endif
+
 .PHONY: lint-sh
 lint-sh:
 	shfmt --diff .
-	shellcheck $$(find . -name '*.sh')
+	SHELLCHECK_OPTS="$(SHELLCHECK_OPTS)" shellcheck $$(find . -name '*.sh')
 
 .PHONY: format-sh
 format-sh:

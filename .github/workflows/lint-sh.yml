@@ -7,6 +7,10 @@ on:
         description: "Root path to search for shell scripts (default: entire repo)"
         type: string
         default: "."
+      shellcheck-options:
+        description: "Additional options to pass to shellcheck"
+        type: string
+        default: ""
       shfmt-version:
         description: "shfmt version to install"
         type: string
@@ -34,6 +38,8 @@ jobs:
 
       - name: Lint (shellcheck)
         uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # v2.0.0
+        env:
+          SHELLCHECK_OPTS: ${{ inputs.shellcheck-options }}
         with:
           scandir: ${{ inputs.path }}
           version: ${{ inputs.shellcheck-version }}
