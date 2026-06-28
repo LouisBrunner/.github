@@ -60,3 +60,4 @@ jobs:
           scandir: ${{ inputs.path }}
           version: ${{ inputs.shellcheck-version }}
           additional_files: ${{ steps.extra.outputs.suffixes }}
+          check_together: true
