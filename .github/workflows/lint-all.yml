@@ -13,36 +13,6 @@ on:
 permissions: {}
 
 jobs:
-  # TODO: remove, handled by super
-  # yaml-skip:
-  #   name: YAML skip check
-  #   uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
-  #   with:
-  #     paths: '["**/*.ya?ml"]'
-  # yaml:
-  #   name: YAML
-  #   needs: yaml-skip
-  #   if: ${{ needs.yaml-skip.outputs.should_skip != 'true' }}
-  #   uses: LouisBrunner/.github/.github/workflows/lint-yaml.yml@main
-  #   with:
-  #     path: ${{ fromJSON(inputs.yaml).path || '.' }}
-  #     config-data: ${{ fromJSON(inputs.yaml)['config-data'] || '' }}
-
-  # TODO: remove, handled by super
-  # markdown-skip:
-  #   name: Markdown skip check
-  #   uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
-  #   with:
-  #     paths: '["**/*.{md,markdown}"]'
-  # markdown:
-  #   name: Markdown
-  #   needs: markdown-skip
-  #   if: ${{ needs.markdown-skip.outputs.should_skip != 'true' }}
-  #   uses: LouisBrunner/.github/.github/workflows/lint-markdown.yml@main
-  #   with:
-  #     path: ${{ fromJSON(inputs.markdown).path || '**/*.{md,markdown}' }}
-  #     config: ${{ fromJSON(inputs.markdown).config || '' }}
-
   biome-skip:
     name: Biome skip check
     uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main

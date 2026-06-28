@@ -17,10 +17,9 @@ lint: lint-super lint-biome lint-toml lint-sh lint-docker lint-tf
 
 # --- Common ---
 
-# Super-linter
 .PHONY: lint-super
 lint-super:
-	docker run --platform linux/amd64 -e LOG_LEVEL=DEBUG -e RUN_LOCAL=true -v $(PWD):/tmp/lint ghcr.io/super-linter/super-linter:slim-v8.7.0
+	docker run --rm --platform linux/amd64 -e RUN_LOCAL=true -e DEFAULT_BRANCH=main -v $(PWD):/tmp/lint ghcr.io/super-linter/super-linter:slim-v8.7.0
 
 # TOML
 .PHONY: lint-toml

@@ -21,6 +21,40 @@ jobs:
       contents: read
       statuses: write
       pull-requests: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # config
+      LINTER_RULES_PATH: .
+      RUST_CLIPPY_COMMAND_OPTIONS: -- -D warnings
+      MARKDOWN_CONFIG_FILE: .markdownlint.yaml
+      YAML_CONFIG_FILE: .yamllint.yaml
+      YAML_ERROR_ON_WARNING: true
+      # reporting
+      ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: false
+      SAVE_SUPER_LINTER_SUMMARY: true
+      # remove duplicate, favor modern tools
+      VALIDATE_PYTHON_BLACK: false
+      VALIDATE_CSS: false # stylelint
+      ## ESLint
+      VALIDATE_JAVASCRIPT_ES: false
+      VALIDATE_JSON: false
+      VALIDATE_JSONC: false
+      VALIDATE_JSX: false
+      VALIDATE_TSX: false
+      VALIDATE_TYPESCRIPT_ES: false
+      VALIDATE_VUE: false
+      ## Prettier
+      VALIDATE_CSS_PRETTIER: false
+      VALIDATE_GRAPHQL_PRETTIER: false
+      VALIDATE_HTML_PRETTIER: false
+      VALIDATE_JAVASCRIPT_PRETTIER: false
+      VALIDATE_JSON_PRETTIER: false
+      VALIDATE_JSONC_PRETTIER: false
+      VALIDATE_JSX_PRETTIER: false
+      VALIDATE_MARKDOWN_PRETTIER: false
+      VALIDATE_TYPESCRIPT_PRETTIER: false
+      VALIDATE_VUE_PRETTIER: false
+      VALIDATE_YAML_PRETTIER: false
     steps:
       - name: Checkout the repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -60,75 +94,7 @@ jobs:
       - name: Lint (slim)
         uses: super-linter/super-linter/slim@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
         if: ${{ inputs.slim }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # config
-          LINTER_RULES_PATH: .
-          RUST_CLIPPY_COMMAND_OPTIONS: -- -D warnings
-          MARKDOWN_CONFIG_FILE: .markdownlint.yaml
-          YAML_CONFIG_FILE: .yamllint.yaml
-          YAML_ERROR_ON_WARNING: true
-          # reporting
-          ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: false
-          SAVE_SUPER_LINTER_SUMMARY: true
-          # remove duplicate, favor modern tools
-          VALIDATE_PYTHON_BLACK: false
-          VALIDATE_CSS: false # stylelint
-          ## ESLint
-          VALIDATE_JAVASCRIPT_ES: false
-          VALIDATE_JSON: false
-          VALIDATE_JSONC: false
-          VALIDATE_JSX: false
-          VALIDATE_TSX: false
-          VALIDATE_TYPESCRIPT_ES: false
-          VALIDATE_VUE: false
-          ## Prettier
-          VALIDATE_CSS_PRETTIER: false
-          VALIDATE_GRAPHQL_PRETTIER: false
-          VALIDATE_HTML_PRETTIER: false
-          VALIDATE_JAVASCRIPT_PRETTIER: false
-          VALIDATE_JSON_PRETTIER: false
-          VALIDATE_JSONC_PRETTIER: false
-          VALIDATE_JSX_PRETTIER: false
-          VALIDATE_MARKDOWN_PRETTIER: false
-          VALIDATE_TYPESCRIPT_PRETTIER: false
-          VALIDATE_VUE_PRETTIER: false
-          VALIDATE_YAML_PRETTIER: false
 
       - name: Lint
         uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
         if: ${{ !inputs.slim }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # config
-          LINTER_RULES_PATH: .
-          RUST_CLIPPY_COMMAND_OPTIONS: -- -D warnings
-          MARKDOWN_CONFIG_FILE: .markdownlint.yaml
-          YAML_CONFIG_FILE: .yamllint.yaml
-          YAML_ERROR_ON_WARNING: true
-          # reporting
-          ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: false
-          SAVE_SUPER_LINTER_SUMMARY: true
-          # remove duplicate, favor modern tools
-          VALIDATE_PYTHON_BLACK: false
-          VALIDATE_CSS: false # stylelint
-          ## ESLint
-          VALIDATE_JAVASCRIPT_ES: false
-          VALIDATE_JSON: false
-          VALIDATE_JSONC: false
-          VALIDATE_JSX: false
-          VALIDATE_TSX: false
-          VALIDATE_TYPESCRIPT_ES: false
-          VALIDATE_VUE: false
-          ## Prettier
-          VALIDATE_CSS_PRETTIER: false
-          VALIDATE_GRAPHQL_PRETTIER: false
-          VALIDATE_HTML_PRETTIER: false
-          VALIDATE_JAVASCRIPT_PRETTIER: false
-          VALIDATE_JSON_PRETTIER: false
-          VALIDATE_JSONC_PRETTIER: false
-          VALIDATE_JSX_PRETTIER: false
-          VALIDATE_MARKDOWN_PRETTIER: false
-          VALIDATE_TYPESCRIPT_PRETTIER: false
-          VALIDATE_VUE_PRETTIER: false
-          VALIDATE_YAML_PRETTIER: false

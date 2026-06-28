@@ -12,6 +12,8 @@ on:
         description: "URL of the deployed GitHub Pages site"
         value: ${{ jobs.deploy.outputs.url }}
 
+permissions: {}
+
 jobs:
   deploy:
     name: Deploy
