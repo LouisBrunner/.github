@@ -170,4 +170,7 @@ jobs:
   super-linter:
     name: Super Linter
     if: ${{ inputs.run-super }}
+    permissions:
+      contents: read
+      statuses: write
     uses: LouisBrunner/.github/.github/workflows/lint-super.yml@main
