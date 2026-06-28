@@ -15,7 +15,7 @@ jobs:
   # yaml:
   #   name: YAML
   #   needs: yaml-skip
-  #   if: ${{ inputs.run-yaml && needs.yaml-skip.outputs.should_skip != 'true' }}
+  #   if: ${{ needs.yaml-skip.outputs.should_skip != 'true' }}
   #   uses: LouisBrunner/.github/.github/workflows/lint-yaml.yml@main
   #   with:
   #     path: ${{ fromJSON(inputs.yaml).path || '.' }}
@@ -30,7 +30,7 @@ jobs:
   # markdown:
   #   name: Markdown
   #   needs: markdown-skip
-  #   if: ${{ inputs.run-markdown && needs.markdown-skip.outputs.should_skip != 'true' }}
+  #   if: ${{ needs.markdown-skip.outputs.should_skip != 'true' }}
   #   uses: LouisBrunner/.github/.github/workflows/lint-markdown.yml@main
   #   with:
   #     path: ${{ fromJSON(inputs.markdown).path || '**/*.{md,markdown}' }}
@@ -46,7 +46,7 @@ jobs:
   biome:
     name: Biome
     needs: biome-skip
-    if: ${{ inputs.run-biome && needs.biome-skip.outputs.should_skip != 'true' }}
+    if: ${{ needs.biome-skip.outputs.should_skip != 'true' }}
     uses: LouisBrunner/.github/.github/workflows/lint-biome.yml@main
     with:
       path: ${{ fromJSON(inputs.biome).path || '.' }}
@@ -61,7 +61,7 @@ jobs:
   toml:
     name: TOML
     needs: toml-skip
-    if: ${{ inputs.run-toml && needs.toml-skip.outputs.should_skip != 'true' }}
+    if: ${{ needs.toml-skip.outputs.should_skip != 'true' }}
     uses: LouisBrunner/.github/.github/workflows/lint-toml.yml@main
 
   sh-skip:
@@ -74,7 +74,7 @@ jobs:
   sh:
     name: Shell
     needs: sh-skip
-    if: ${{ inputs.run-sh && needs.sh-skip.outputs.should_skip != 'true' }}
+    if: ${{ needs.sh-skip.outputs.should_skip != 'true' }}
     uses: LouisBrunner/.github/.github/workflows/lint-sh.yml@main
     with:
       path: ${{ fromJSON(inputs.sh).path || '.' }}
@@ -90,7 +90,7 @@ jobs:
   docker:
     name: Docker
     needs: docker-skip
-    if: ${{ inputs.run-docker && needs.docker-skip.outputs.should_skip != 'true' }}
+    if: ${{ needs.docker-skip.outputs.should_skip != 'true' }}
     uses: LouisBrunner/.github/.github/workflows/lint-docker.yml@main
     with:
       path: ${{ fromJSON(inputs.docker).path || '.' }}
@@ -99,7 +99,6 @@ jobs:
 
   super-linter:
     name: Super Linter
-    if: ${{ inputs.run-super }}
     permissions:
       contents: read
       statuses: write
