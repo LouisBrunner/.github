@@ -34,6 +34,8 @@ jobs:
               level: error
             document-start: disable
             truthy: disable
+            comments:
+              min-spaces-from-content: 1
           EOF
 
       - name: Write default markdownlint config
@@ -61,12 +63,26 @@ jobs:
           # reporting
           ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: false
           SAVE_SUPER_LINTER_SUMMARY: true
-          # overall, we do not want prettier
+          # remove duplicate, favor modern tools
+          VALIDATE_PYTHON_BLACK: false
+          VALIDATE_CSS: false # stylelint
+          ## ESLint
+          VALIDATE_JAVASCRIPT_ES: false
+          VALIDATE_JSON: false
+          VALIDATE_JSONC: false
+          VALIDATE_JSX: false
+          VALIDATE_TSX: false
+          VALIDATE_TYPESCRIPT_ES: false
+          VALIDATE_VUE: false
+          ## Prettier
           VALIDATE_CSS_PRETTIER: false
+          VALIDATE_GRAPHQL_PRETTIER: false
+          VALIDATE_HTML_PRETTIER: false
           VALIDATE_JAVASCRIPT_PRETTIER: false
           VALIDATE_JSON_PRETTIER: false
           VALIDATE_JSONC_PRETTIER: false
           VALIDATE_JSX_PRETTIER: false
           VALIDATE_MARKDOWN_PRETTIER: false
           VALIDATE_TYPESCRIPT_PRETTIER: false
+          VALIDATE_VUE_PRETTIER: false
           VALIDATE_YAML_PRETTIER: false
