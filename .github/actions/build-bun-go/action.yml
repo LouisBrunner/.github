@@ -5,7 +5,7 @@ description: >
 
 inputs:
   bun-version:
-    description: "Bun version to use (empty = latest stable)"
+    description: "Bun version to use"
     required: false
     default: ""
   go-version-file:
@@ -21,16 +21,14 @@ runs:
   using: composite
   steps:
     - name: Set up Bun
-      uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      uses: ./.github/actions/setup-bun
       with:
-        bun-version: ${{ inputs.bun-version != '' && inputs.bun-version || 'latest' }}
-        no-cache: false
+        bun-version: ${{ inputs.bun-version }}
 
     - name: Set up Go
-      uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+      uses: ./.github/actions/setup-go
       with:
         go-version-file: ${{ inputs.go-version-file }}
-        cache: true
 
     - name: Build
       shell: bash

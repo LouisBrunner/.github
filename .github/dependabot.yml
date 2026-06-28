@@ -4,6 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      min-age-in-days: 7
     groups:
       actions-security:
         applies-to: security-updates

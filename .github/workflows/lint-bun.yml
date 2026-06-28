@@ -4,13 +4,15 @@ on:
   workflow_call:
     inputs:
       bun-version:
-        description: "Bun version to use (empty = latest stable)"
+        description: "Bun version to use"
         type: string
         default: ""
       run:
         description: "Lint command to run (empty = default: bun run lint:ci)."
         type: string
         default: ""
+
+permissions: {}
 
 jobs:
   lint:
@@ -21,10 +23,9 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Set up Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        uses: LouisBrunner/.github/.github/actions/setup-bun@main
         with:
-          bun-version: ${{ inputs.bun-version != '' && inputs.bun-version || 'latest' }}
-          no-cache: false
+          bun-version: ${{ inputs.bun-version }}
 
       - name: Install dependencies
         run: bun install

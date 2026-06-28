@@ -37,6 +37,8 @@ on:
         default: "{}"
 
 # TODO: legacy, get rid of when all repos migrated
+permissions: {}
+
 jobs:
   all:
     name: All

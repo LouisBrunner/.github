@@ -3,6 +3,8 @@ name: Update aggregate tags
 on:
   workflow_call:
 
+permissions: {}
+
 jobs:
   retag:
     permissions:
@@ -22,7 +24,7 @@ jobs:
         run: |
           TRUNC_VER=$(echo "$REF_NAME" | cut -d '.' -f 1)
           echo "Short tag: $TRUNC_VER"
-          echo "tag=$TRUNC_VER" >> $GITHUB_OUTPUT
+          echo "tag=$TRUNC_VER" >> "$GITHUB_OUTPUT"
 
       - name: Create or update short tag
         uses: rickstaa/action-create-tag@a1c7777fcb2fee4f19b0f283ba888afa11678b72 # v1.7.2

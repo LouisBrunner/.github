@@ -16,6 +16,8 @@ on:
         description: "'true' if this run is a duplicate and should be skipped."
         value: ${{ jobs.pre.outputs.should_skip }}
 
+permissions: {}
+
 jobs:
   pre:
     name: Check for changes

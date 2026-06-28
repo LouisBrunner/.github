@@ -3,6 +3,8 @@ name: Lint TOML
 on:
   workflow_call:
 
+permissions: {}
+
 jobs:
   lint:
     name: Tombi

@@ -12,6 +12,8 @@ on:
         type: string
         default: "2.5.0"
 
+permissions: {}
+
 jobs:
   lint:
     name: Biome

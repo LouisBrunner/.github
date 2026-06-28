@@ -11,6 +11,8 @@ on:
 # TODO:
 # - enable commitlint by creating a default config
 
+permissions: {}
+
 jobs:
   lint:
     name: super-linter

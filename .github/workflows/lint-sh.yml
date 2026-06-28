@@ -24,6 +24,8 @@ on:
         type: string
         default: "v0.11.0"
 
+permissions: {}
+
 jobs:
   lint:
     name: shfmt + shellcheck
@@ -40,8 +42,10 @@ jobs:
       - name: Gather additional shell scripts
         id: extra
         run: |
-          by_directive=$(find "${{ inputs.path }}" -type f ! -name "*.*" | xargs grep -lE '# shellcheck shell=' 2>/dev/null | tr '\n' ' ')
-          extra=$(echo "${{ inputs.additional-files }} $by_directive" | tr ' ' '\n' | sort -u | grep -v '^$' | tr '\n' ' ')
+          by_directive=$(find "${{ inputs.path }}" -type f ! -name "*.*" -print0 \
+            | xargs -0 grep -lE '# shellcheck shell=' 2>/dev/null | tr '\n' ' ')
+          extra=$(echo "${{ inputs.additional-files }} $by_directive" \
+            | tr ' ' '\n' | sort -u | grep -v '^$' | tr '\n' ' ')
           suffixes=$(echo "$extra" | tr ' ' '\n' | grep -v '^$' | xargs -r -n1 basename | sort -u | tr '\n' ' ')
           echo "files=$extra" >> "$GITHUB_OUTPUT"
           echo "suffixes=$suffixes" >> "$GITHUB_OUTPUT"

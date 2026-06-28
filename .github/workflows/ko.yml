@@ -28,6 +28,8 @@ on:
         description: "Password or token for the container registry."
         required: true
 
+permissions: {}
+
 jobs:
   build:
     name: Build
@@ -35,12 +37,13 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Go
-        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        uses: LouisBrunner/.github/.github/actions/setup-go@main
         with:
           go-version-file: ${{ inputs.go-version-file }}
-          cache: true
 
       - name: Set up ko
         uses: ko-build/setup-ko@d006021bd0c28d1ce33a07e7943d48b079944c8d # v0.9
@@ -48,7 +51,7 @@ jobs:
           version: ${{ inputs.ko-version }}
 
       - name: Login to container registry
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
           registry: ${{ inputs.registry }}
           username: ${{ inputs.registry-username }}

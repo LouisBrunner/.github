@@ -16,6 +16,8 @@ on:
         type: string
         default: "--newline -i 2"
 
+permissions: {}
+
 jobs:
   lint:
     name: dockerfmt
@@ -27,7 +29,8 @@ jobs:
       - name: Install dockerfmt
         run: |
           version="${{ inputs.dockerfmt-version }}"
-          curl -fsSL "https://github.com/reteps/dockerfmt/releases/download/${version}/dockerfmt-${version}-linux-amd64.tar.gz" \
+          base_url="https://github.com/reteps/dockerfmt/releases/download/${version}"
+          curl -fsSL "${base_url}/dockerfmt-${version}-linux-amd64.tar.gz" \
             | tar -xz -C /usr/local/bin dockerfmt
 
       - name: Check formatting (dockerfmt)
