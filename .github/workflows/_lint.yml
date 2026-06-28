@@ -11,6 +11,7 @@ concurrency:
 
 jobs:
   all:
+    name: Lint All
     permissions:
       contents: read
       statuses: write

@@ -2,6 +2,11 @@ name: Lint all files
 
 on:
   workflow_call:
+    inputs:
+      with_rust:
+        type: boolean
+        default: false
+        description: "Whether the project contains Rust files"
 
 # TODO: merge all linting in this and make bun/go/rust/uv/tf into test/build focused workflows
 
@@ -104,3 +109,5 @@ jobs:
       statuses: write
       pull-requests: write
     uses: LouisBrunner/.github/.github/workflows/lint-super.yml@main
+    with:
+      slim: ${{ !inputs.with_rust }}
