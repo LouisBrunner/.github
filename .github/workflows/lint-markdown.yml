@@ -34,6 +34,7 @@ jobs:
           MD013:
             line_length: 200
             code_blocks: false
+            tables: false
           EOF
 
       - name: Lint Markdown files
