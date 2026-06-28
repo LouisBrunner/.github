@@ -64,21 +64,25 @@ on:
         type: boolean
         default: true
 
-jobs:
-  yaml-skip:
-    name: YAML skip check
-    uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
-    with:
-      paths: '["**/*.ya?ml"]'
+# TODO: super also handles
+# - biome: validate if it works for us
+# - shellcheck/shfmt: but wrong files
 
-  yaml:
-    name: YAML
-    needs: yaml-skip
-    if: ${{ inputs.run-yaml && needs.yaml-skip.outputs.should_skip != 'true' }}
-    uses: LouisBrunner/.github/.github/workflows/lint-yaml.yml@main
-    with:
-      path: ${{ fromJSON(inputs.yaml).path || '.' }}
-      config-data: ${{ fromJSON(inputs.yaml)['config-data'] || '' }}
+jobs:
+  # TODO: handled by super
+  # yaml-skip:
+  #   name: YAML skip check
+  #   uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
+  #   with:
+  #     paths: '["**/*.ya?ml"]'
+  # yaml:
+  #   name: YAML
+  #   needs: yaml-skip
+  #   if: ${{ inputs.run-yaml && needs.yaml-skip.outputs.should_skip != 'true' }}
+  #   uses: LouisBrunner/.github/.github/workflows/lint-yaml.yml@main
+  #   with:
+  #     path: ${{ fromJSON(inputs.yaml).path || '.' }}
+  #     config-data: ${{ fromJSON(inputs.yaml)['config-data'] || '' }}
 
   biome-skip:
     name: Biome skip check
@@ -107,20 +111,20 @@ jobs:
     if: ${{ inputs.run-toml && needs.toml-skip.outputs.should_skip != 'true' }}
     uses: LouisBrunner/.github/.github/workflows/lint-toml.yml@main
 
-  markdown-skip:
-    name: Markdown skip check
-    uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
-    with:
-      paths: '["**/*.{md,markdown}"]'
-
-  markdown:
-    name: Markdown
-    needs: markdown-skip
-    if: ${{ inputs.run-markdown && needs.markdown-skip.outputs.should_skip != 'true' }}
-    uses: LouisBrunner/.github/.github/workflows/lint-markdown.yml@main
-    with:
-      path: ${{ fromJSON(inputs.markdown).path || '**/*.{md,markdown}' }}
-      config: ${{ fromJSON(inputs.markdown).config || '' }}
+  # TODO: handled by super
+  # markdown-skip:
+  #   name: Markdown skip check
+  #   uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
+  #   with:
+  #     paths: '["**/*.{md,markdown}"]'
+  # markdown:
+  #   name: Markdown
+  #   needs: markdown-skip
+  #   if: ${{ inputs.run-markdown && needs.markdown-skip.outputs.should_skip != 'true' }}
+  #   uses: LouisBrunner/.github/.github/workflows/lint-markdown.yml@main
+  #   with:
+  #     path: ${{ fromJSON(inputs.markdown).path || '**/*.{md,markdown}' }}
+  #     config: ${{ fromJSON(inputs.markdown).config || '' }}
 
   sh-skip:
     name: Shell skip check
@@ -154,19 +158,19 @@ jobs:
       dockerfmt-version: ${{ fromJSON(inputs.docker)['dockerfmt-version'] || 'v0.5.4' }}
       options: ${{ fromJSON(inputs.docker).options || '--newline -i 2' }}
 
-  gha-skip:
-    name: GHA skip check
-    uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
-    with:
-      paths: '[".github/**"]'
-
-  gha:
-    name: GHA
-    needs: gha-skip
-    if: ${{ inputs.run-gha && needs.gha-skip.outputs.should_skip != 'true' }}
-    uses: LouisBrunner/.github/.github/workflows/lint-gha.yml@main
-    with:
-      version: ${{ fromJSON(inputs.gha).version || '1.7.12' }}
+  # TODO: handled by super
+  # gha-skip:
+  #   name: GHA skip check
+  #   uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
+  #   with:
+  #     paths: '[".github/**"]'
+  # gha:
+  #   name: GHA
+  #   needs: gha-skip
+  #   if: ${{ inputs.run-gha && needs.gha-skip.outputs.should_skip != 'true' }}
+  #   uses: LouisBrunner/.github/.github/workflows/lint-gha.yml@main
+  #   with:
+  #     version: ${{ fromJSON(inputs.gha).version || '1.7.12' }}
 
   super-linter:
     name: Super Linter

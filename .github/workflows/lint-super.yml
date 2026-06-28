@@ -3,6 +3,9 @@ name: Lint (super-linter)
 on:
   workflow_call:
 
+# TODO:
+# - enable commitlint by creating a default config
+
 jobs:
   lint:
     name: super-linter
@@ -49,10 +52,15 @@ jobs:
         uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # config
+          LINTER_RULES_PATH: .
           RUST_CLIPPY_COMMAND_OPTIONS: -- -D warnings
+          MARKDOWN_CONFIG_FILE: .markdownlint.yaml
           YAML_CONFIG_FILE: .yamllint.yaml
           YAML_ERROR_ON_WARNING: true
-          MARKDOWN_CONFIG_FILE: .markdownlint.yaml
+          # reporting
+          ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: false
+          SAVE_SUPER_LINTER_SUMMARY: true
           # overall, we do not want prettier
           VALIDATE_CSS_PRETTIER: false
           VALIDATE_JAVASCRIPT_PRETTIER: false
