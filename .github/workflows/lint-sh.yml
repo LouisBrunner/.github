@@ -1,0 +1,39 @@
+name: Lint Shell
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        description: "Root path to search for shell scripts (default: entire repo)"
+        type: string
+        default: "."
+      shfmt-version:
+        description: "shfmt version to install"
+        type: string
+        default: "v3.13.1"
+      shellcheck-version:
+        description: "shellcheck version to install"
+        type: string
+        default: "v0.11.0"
+
+jobs:
+  lint:
+    name: shfmt + shellcheck
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Set up shfmt
+        uses: mfinelli/setup-shfmt@a25fda4c1fe115aec0f85e04126610841bc3141d # v4.0.1
+        with:
+          shfmt-version: ${{ inputs.shfmt-version }}
+
+      - name: Check formatting (shfmt)
+        run: shfmt --diff "${{ inputs.path }}"
+
+      - name: Lint (shellcheck)
+        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # v2.0.0
+        with:
+          scandir: ${{ inputs.path }}
+          version: ${{ inputs.shellcheck-version }}

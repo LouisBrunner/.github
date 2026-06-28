@@ -35,6 +35,14 @@ on:
         description: "JSON overrides for lint-markdown (keys: path, config)"
         type: string
         default: "{}"
+      run-sh:
+        description: "Run shfmt + shellcheck"
+        type: boolean
+        default: true
+      sh:
+        description: "JSON overrides for lint-sh (keys: path, shfmt-version, shellcheck-version)"
+        type: string
+        default: "{}"
 
 jobs:
   yaml-skip:
@@ -93,3 +101,19 @@ jobs:
     with:
       path: ${{ fromJSON(inputs.markdown).path || '**/*.{md,markdown}' }}
       config: ${{ fromJSON(inputs.markdown).config || '' }}
+
+  sh-skip:
+    name: Shell skip check
+    uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
+    with:
+      paths: '["**/*.sh"]'
+
+  sh:
+    name: Shell
+    needs: sh-skip
+    if: ${{ inputs.run-sh && needs.sh-skip.outputs.should_skip != 'true' }}
+    uses: LouisBrunner/.github/.github/workflows/lint-sh.yml@main
+    with:
+      path: ${{ fromJSON(inputs.sh).path || '.' }}
+      shfmt-version: ${{ fromJSON(inputs.sh)['shfmt-version'] || 'v3.13.1' }}
+      shellcheck-version: ${{ fromJSON(inputs.sh)['shellcheck-version'] || 'v0.11.0' }}

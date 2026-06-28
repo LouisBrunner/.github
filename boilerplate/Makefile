@@ -13,7 +13,7 @@ all: vet
 # ── Lint / format ──────────────────────────────────────────────────────────────
 
 .PHONY: vet
-vet: lint-yaml lint-biome lint-toml lint-md
+vet: lint-yaml lint-biome lint-toml lint-md lint-sh
 
 # Go
 .PHONY: lint-go
@@ -83,6 +83,16 @@ lint-md:
 .PHONY: format-md
 format-md:
 	markdownlint-cli2 --fix '**/*.{md,markdown}'
+
+# Shell
+.PHONY: lint-sh
+lint-sh:
+	shfmt --diff .
+	shellcheck $$(find . -name '*.sh')
+
+.PHONY: format-sh
+format-sh:
+	shfmt --write .
 
 # Rust
 .PHONY: lint-rust
