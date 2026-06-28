@@ -10,7 +10,7 @@ on:
       shfmt-version:
         description: "shfmt version to install"
         type: string
-        default: "v3.13.1"
+        default: "3.13.1"
       shellcheck-version:
         description: "shellcheck version to install"
         type: string

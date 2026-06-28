@@ -115,5 +115,5 @@ jobs:
     uses: LouisBrunner/.github/.github/workflows/lint-sh.yml@main
     with:
       path: ${{ fromJSON(inputs.sh).path || '.' }}
-      shfmt-version: ${{ fromJSON(inputs.sh)['shfmt-version'] || 'v3.13.1' }}
+      shfmt-version: ${{ fromJSON(inputs.sh)['shfmt-version'] || '3.13.1' }}
       shellcheck-version: ${{ fromJSON(inputs.sh)['shellcheck-version'] || 'v0.11.0' }}
