@@ -3,6 +3,10 @@ name: Lint all files
 on:
   workflow_call:
     inputs:
+      skip_shell:
+        type: boolean
+        default: false
+        description: "Whether to skip shell linting"
       with_rust:
         type: boolean
         default: false
@@ -43,6 +47,7 @@ jobs:
 
   sh-skip:
     name: Shell skip check
+    if: ${{ inputs.skip_shell != 'true' }}
     uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
     with:
       paths: '["**/*.sh"]'
