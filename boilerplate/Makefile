@@ -22,6 +22,8 @@ lint: lint-super lint-biome lint-toml lint-sh lint-docker lint-tf
 # --- Common ---
 
 SUPER_LINTER_CONFIG_FILE ?= $(MKFILE_DIR)/super-config.env
+SUPER_SETTINGS ?=
+EXTRA_ENV_VARS = $(foreach var,$(SUPER_SETTINGS),-e $(var))
 
 .PHONY: lint-super
 lint-super:
@@ -29,7 +31,7 @@ lint-super:
 		-v $(PWD):/tmp/lint -v $(MKFILE_DIR)/..:/tmp/config:ro \
 		-v super-linter-cache:/root/.cache \
 		-e RUN_LOCAL=true -e DEFAULT_BRANCH=main -e LINTER_RULES_PATH=../config \
-		--env-file $(SUPER_LINTER_CONFIG_FILE) \
+		--env-file $(SUPER_LINTER_CONFIG_FILE) $(EXTRA_ENV_VARS) \
 		ghcr.io/super-linter/super-linter:slim-v8.7.0
 
 # TOML

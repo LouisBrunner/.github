@@ -19,6 +19,9 @@ permissions: {}
 jobs:
   biome-skip:
     name: Biome skip check
+    permissions:
+      contents: read
+      actions: read
     uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
     with:
       paths: '["**/*.jsonc?", "**/*.[mc]?[tj]sx?", "**/*.s?[ca]ss", "**/*.html"]'
@@ -28,6 +31,8 @@ jobs:
     name: Biome
     needs: biome-skip
     if: ${{ needs.biome-skip.outputs.should_skip != 'true' }}
+    permissions:
+      contents: read
     uses: LouisBrunner/.github/.github/workflows/lint-biome.yml@main
     with:
       path: "."
@@ -35,6 +40,9 @@ jobs:
 
   toml-skip:
     name: TOML skip check
+    permissions:
+      contents: read
+      actions: read
     uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
     with:
       paths: '["**/*.toml"]'
@@ -43,11 +51,16 @@ jobs:
     name: TOML
     needs: toml-skip
     if: ${{ needs.toml-skip.outputs.should_skip != 'true' }}
+    permissions:
+      contents: read
     uses: LouisBrunner/.github/.github/workflows/lint-toml.yml@main
 
   sh-skip:
     name: Shell skip check
     if: ${{ inputs.skip_shell != 'true' }}
+    permissions:
+      contents: read
+      actions: read
     uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
     with:
       paths: '["**/*.sh"]'
@@ -57,6 +70,8 @@ jobs:
     name: Shell
     needs: sh-skip
     if: ${{ needs.sh-skip.outputs.should_skip != 'true' }}
+    permissions:
+      contents: read
     uses: LouisBrunner/.github/.github/workflows/lint-sh.yml@main
     with:
       path: "."
@@ -65,6 +80,9 @@ jobs:
 
   docker-skip:
     name: Docker skip check
+    permissions:
+      contents: read
+      actions: read
     uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
     with:
       paths: '["**/Dockerfile", "**/Dockerfile.*"]'
@@ -73,6 +91,8 @@ jobs:
     name: Docker
     needs: docker-skip
     if: ${{ needs.docker-skip.outputs.should_skip != 'true' }}
+    permissions:
+      contents: read
     uses: LouisBrunner/.github/.github/workflows/lint-docker.yml@main
     with:
       path: "."
