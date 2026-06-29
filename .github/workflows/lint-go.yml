@@ -22,6 +22,8 @@ jobs:
   lint:
     name: Vet
     runs-on: ${{ inputs.runs-on }}
+    permissions:
+      contents: read
     steps:
       - name: Checkout and set up Go
         uses: LouisBrunner/.github/.github/actions/checkout-go@main
