@@ -36,7 +36,7 @@ jobs:
         run: |
           curl -fsSL "$BASE_URL/boilerplate/super-config.env" \
             | grep -v '^#' | grep -v '^$' | sed 's/="\(.*\)"$/=\1/' >> "$GITHUB_ENV"
-          [ -f jscpd.json ] || curl -fsSL "$BASE_URL/jscpd.json" -o jscpd.json
+          [ -f .jscpd.json ] || curl -fsSL "$BASE_URL/.jscpd.json" -o .jscpd.json
           [ -f .markdown-lint.yaml ] || curl -fsSL "$BASE_URL/.markdown-lint.yaml" -o .markdown-lint.yaml
           [ -f .yaml-lint.yaml ] || curl -fsSL "$BASE_URL/.yaml-lint.yaml" -o .yaml-lint.yaml
           [ -f .zizmor.yaml ] || curl -fsSL "$BASE_URL/.zizmor.yaml" -o .zizmor.yaml
