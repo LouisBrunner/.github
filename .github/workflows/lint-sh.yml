@@ -43,23 +43,29 @@ jobs:
 
       - name: Gather additional shell scripts
         id: extra
+        env:
+          SEARCH_PATH: ${{ inputs.path }}
+          ADDITIONAL_FILES: ${{ inputs.additional-files }}
         run: |
-          by_directive=$(find "${{ inputs.path }}" -type f ! -name "*.*" -print0 \
+          by_directive=$(find "$SEARCH_PATH" -type f ! -name "*.*" -print0 \
             | xargs -0 grep -lE '# shellcheck shell=' 2>/dev/null | tr '\n' ' ')
-          extra=$(echo "${{ inputs.additional-files }} $by_directive" \
+          extra=$(echo "$ADDITIONAL_FILES $by_directive" \
             | tr ' ' '\n' | sort -u | grep -v '^$' | tr '\n' ' ')
           suffixes=$(echo "$extra" | tr ' ' '\n' | grep -v '^$' | xargs -r -n1 basename | sort -u | tr '\n' ' ')
           echo "files=$extra" >> "$GITHUB_OUTPUT"
           echo "suffixes=$suffixes" >> "$GITHUB_OUTPUT"
 
       - name: Check formatting (shfmt)
+        env:
+          SEARCH_PATH: ${{ inputs.path }}
+          EXTRA_FILES: ${{ steps.extra.outputs.files }}
         run: |
-          shfmt --diff "${{ inputs.path }}"
-          extra="${{ steps.extra.outputs.files }}"
-          test -z "$extra" || shfmt --language-dialect bash --diff $extra
+          shfmt --diff "$SEARCH_PATH"
+          read -ra extra <<< "$EXTRA_FILES"
+          test -z "${extra[@]}" || shfmt --language-dialect bash --diff "${extra[@]}"
 
       - name: Lint (shellcheck)
-        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # v2.0.0
+        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # 2.0.0
         env:
           SHELLCHECK_OPTS: ${{ inputs.shellcheck-options }}
         with:

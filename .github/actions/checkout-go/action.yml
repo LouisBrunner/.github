@@ -1,0 +1,21 @@
+name: Checkout and set up Go
+description: Check out the repository and install Go.
+
+inputs:
+  go-version-file:
+    description: "Path to go.mod to derive the Go version"
+    required: false
+    default: "go.mod"
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout the repository
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      with:
+        persist-credentials: false
+
+    - name: Set up Go
+      uses: LouisBrunner/.github/.github/actions/setup-go@main
+      with:
+        go-version-file: ${{ inputs.go-version-file }}

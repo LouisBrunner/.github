@@ -1,3 +1,7 @@
+MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+MKFILE_DIR := $(dir $(MKFILE_PATH))
+
+# TODO: not needed?
 BIOME_CMD ?= biome
 ifeq ($(shell command -v $(BIOME_CMD) 2>/dev/null),)
 	BIOME_CMD = bunx @biomejs/biome
@@ -17,9 +21,16 @@ lint: lint-super lint-biome lint-toml lint-sh lint-docker lint-tf
 
 # --- Common ---
 
+SUPER_LINTER_CONFIG_FILE ?= $(MKFILE_DIR)/super-config.env
+
 .PHONY: lint-super
 lint-super:
-	docker run --rm --platform linux/amd64 -e RUN_LOCAL=true -e DEFAULT_BRANCH=main -v $(PWD):/tmp/lint ghcr.io/super-linter/super-linter:slim-v8.7.0
+	docker run --rm --platform linux/amd64 \
+		-v $(PWD):/tmp/lint -v $(MKFILE_DIR)/..:/tmp/config:ro \
+		-v super-linter-cache:/root/.cache \
+		-e RUN_LOCAL=true -e DEFAULT_BRANCH=main -e LINTER_RULES_PATH=../config \
+		--env-file $(SUPER_LINTER_CONFIG_FILE) \
+		ghcr.io/super-linter/super-linter:slim-v8.7.0
 
 # TOML
 .PHONY: lint-toml
@@ -36,19 +47,24 @@ SHELLCHECK_OPTS ?=
 ifdef SHELL_ROOT
 SHELLCHECK_OPTS += -P $(SHELL_ROOT)
 endif
+SC_FILES = $(shell find . -name '*.sh' -type f)
+SHELL_NO_EXT_FILES != shell find . -type f ! -name "*.*" | xargs grep -lE '\# shellcheck shell=' 2>/dev/null | grep -v Makefile
 SHELL_EXTRA_FILES ?=
-SHELL_EXTRA_FILES += $(shell find . -type f ! -name "*.*" | xargs grep -lE '\# shellcheck shell=' 2>/dev/null)
+SHELL_EXTRA_FILES += $(SHELL_NO_EXT_FILES)
+SC_FILES += $(SHELL_NO_EXT_FILES)
+SHELL_EXTRA_FILES_S = $(strip $(SHELL_EXTRA_FILES))
+SC_FILES_S = $(strip $(SC_FILES))
 
 .PHONY: lint-sh
 lint-sh:
 	shfmt --diff .
-	test -z "$(SHELL_EXTRA_FILES)" || shfmt --language-dialect bash --diff $(SHELL_EXTRA_FILES)
-	SHELLCHECK_OPTS="$(SHELLCHECK_OPTS)" shellcheck $$(find . -name '*.sh') $(SHELL_EXTRA_FILES)
+	test -z "$(SHELL_EXTRA_FILES_S)" || shfmt --language-dialect bash --diff $(SHELL_EXTRA_FILES_S)
+	test -z "$(SC_FILES_S)" || SHELLCHECK_OPTS="$(SHELLCHECK_OPTS)" shellcheck $(SC_FILES_S)
 
 .PHONY: format-sh
 format-sh:
 	shfmt --write .
-	test -z "$(SHELL_EXTRA_FILES)" || shfmt --language-dialect bash --write $(SHELL_EXTRA_FILES)
+	test -z "$(SHELL_EXTRA_FILES_S)" || shfmt --language-dialect bash --write $(SHELL_EXTRA_FILES_S)
 
 # Docker
 DOCKER_FILES := $(shell git ls-files | grep -E '(^|/)Dockerfile(\..+)?$$')
@@ -56,11 +72,11 @@ DOCKERFMT_OPTS ?= --newline -i 2
 
 .PHONY: lint-docker
 lint-docker:
-	dockerfmt --check $(DOCKERFMT_OPTS) $(DOCKER_FILES)
+	test -z "$(DOCKER_FILES)" || dockerfmt --check $(DOCKERFMT_OPTS) $(DOCKER_FILES)
 
 .PHONY: format-docker
 format-docker:
-	dockerfmt --write $(DOCKERFMT_OPTS) $(DOCKER_FILES)
+	test -z "$(DOCKER_FILES)" || dockerfmt --write $(DOCKERFMT_OPTS) $(DOCKER_FILES)
 
 # TODO: replace with super?
 # Biome (JSON / HTML / JS / TS / CSS)

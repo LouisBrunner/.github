@@ -1,0 +1,6 @@
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        LouisBrunner/.github/*: any
+        "*": hash-pin

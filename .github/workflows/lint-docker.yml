@@ -29,15 +29,20 @@ jobs:
           persist-credentials: false
 
       - name: Install dockerfmt
+        env:
+          DOCKERFMT_VERSION: ${{ inputs.dockerfmt-version }}
         run: |
-          version="${{ inputs.dockerfmt-version }}"
-          base_url="https://github.com/reteps/dockerfmt/releases/download/${version}"
-          curl -fsSL "${base_url}/dockerfmt-${version}-linux-amd64.tar.gz" \
+          base_url="https://github.com/reteps/dockerfmt/releases/download/${DOCKERFMT_VERSION}"
+          curl -fsSL "${base_url}/dockerfmt-${DOCKERFMT_VERSION}-linux-amd64.tar.gz" \
             | tar -xz -C /usr/local/bin dockerfmt
 
       - name: Check formatting (dockerfmt)
+        env:
+          SEARCH_PATH: ${{ inputs.path }}
+          DOCKERFMT_OPTIONS: ${{ inputs.options }}
         run: |
-          mapfile -t files < <(find "${{ inputs.path }}" -type f \( -name 'Dockerfile' -o -name 'Dockerfile.*' \))
+          mapfile -t files < <(find "$SEARCH_PATH" -type f \( -name 'Dockerfile' -o -name 'Dockerfile.*' \))
           if [ ${#files[@]} -gt 0 ]; then
-            dockerfmt --check ${{ inputs.options }} "${files[@]}"
+            read -ra opts <<< "$DOCKERFMT_OPTIONS"
+            dockerfmt --check "${opts[@]}" "${files[@]}"
           fi

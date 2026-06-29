@@ -18,4 +18,4 @@ jobs:
       contents: read
       statuses: write
       pull-requests: write
-    uses: ./.github/workflows/lint-all.yml
+    uses: LouisBrunner/.github/workflows/lint-all.yml@main
