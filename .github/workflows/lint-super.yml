@@ -40,10 +40,5 @@ jobs:
           [ -f .markdown-lint.yaml ] || curl -fsSL "$BASE_URL/.markdown-lint.yaml" -o .markdown-lint.yaml
           [ -f .zizmor.yaml ] || curl -fsSL "$BASE_URL/.zizmor.yaml" -o .zizmor.yaml
 
-      - name: Lint (slim)
-        uses: super-linter/super-linter/slim@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
-        if: ${{ inputs.slim }}
-
-      - name: Lint
+      - name: Lint # FIXME: would be nice to have a conditional but GHA pulls both anyway
         uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
-        if: ${{ !inputs.slim }}
