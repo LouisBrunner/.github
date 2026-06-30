@@ -40,6 +40,7 @@ jobs:
           [ -f .markdown-lint.yaml ] || curl -fsSL "$BASE_URL/.markdown-lint.yaml" -o .markdown-lint.yaml
           [ -f .yaml-lint.yaml ] || curl -fsSL "$BASE_URL/.yaml-lint.yaml" -o .yaml-lint.yaml
           [ -f .zizmor.yaml ] || curl -fsSL "$BASE_URL/.zizmor.yaml" -o .zizmor.yaml
+          [ -f .github/super-linter.env ] && cat .github/super-linter.env >> "$GITHUB_ENV" || true
 
       - name: Lint # FIXME: would be nice to have a conditional but GHA pulls both anyway
         uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0

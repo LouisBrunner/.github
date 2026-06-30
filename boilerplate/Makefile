@@ -24,6 +24,10 @@ lint: lint-super lint-biome lint-toml lint-sh lint-docker lint-tf
 SUPER_LINTER_CONFIG_FILE ?= $(MKFILE_DIR)/super-config.env
 SUPER_SETTINGS ?=
 EXTRA_ENV_VARS = $(foreach var,$(SUPER_SETTINGS),-e $(var))
+LOCAL_ENV_FILE ?= $(shell find $(PWD) -name 'super-config.env' -type f)
+ifneq ($(LOCAL_ENV_FILE),)
+	EXTRA_ENV_VARS += --env-file $(LOCAL_ENV_FILE)
+endif
 
 .PHONY: lint-super
 lint-super:
