@@ -15,6 +15,7 @@ jobs:
   all:
     name: Lint All
     permissions:
+      actions: read
       contents: read
       statuses: write
       pull-requests: write
