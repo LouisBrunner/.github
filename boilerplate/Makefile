@@ -28,15 +28,24 @@ LOCAL_ENV_FILE ?= $(shell find $(PWD) -name 'super-config.env' -type f)
 ifneq ($(LOCAL_ENV_FILE),)
 	EXTRA_ENV_VARS += --env-file $(LOCAL_ENV_FILE)
 endif
+SUPER_DEBUG ?= false
+ifeq ($(SUPER_DEBUG),true)
+	EXTRA_ENV_VARS += -e LOG_LEVEL=DEBUG
+endif
+SUPER_CONFIG := $(shell mktemp -d)
 
 .PHONY: lint-super
 lint-super:
+	@find $(MKFILE_DIR)/..  -depth 1 -type f -exec cp {} $(SUPER_CONFIG)/ \;
+	@find $(PWD) -depth 1 -type f -exec cp {} $(SUPER_CONFIG)/ \;
+	ls -la $(SUPER_CONFIG)
 	docker run --rm --platform linux/amd64 \
-		-v $(PWD):/tmp/lint -v $(MKFILE_DIR)/..:/tmp/config:ro \
+		-v $(PWD):/tmp/lint -v $(SUPER_CONFIG):/tmp/config:ro \
 		-v super-linter-cache:/root/.cache \
 		-e RUN_LOCAL=true -e DEFAULT_BRANCH=main -e LINTER_RULES_PATH=../config \
 		--env-file $(SUPER_LINTER_CONFIG_FILE) $(EXTRA_ENV_VARS) \
 		ghcr.io/super-linter/super-linter:slim-v8.7.0
+	rm -rf $(SUPER_CONFIG)
 
 # TOML
 .PHONY: lint-toml
