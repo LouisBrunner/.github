@@ -21,7 +21,7 @@ runs:
   using: composite
   steps:
     - name: Set up Bun
-      uses: LouisBrunner/.github/.github/actions/setup-bun.yaml@main
+      uses: LouisBrunner/.github/.github/actions/setup-bun@main
       with:
         bun-version: ${{ inputs.bun-version }}
 
