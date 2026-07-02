@@ -23,7 +23,7 @@ lint: lint-super lint-biome lint-toml lint-sh lint-docker lint-tf
 
 SUPER_LINTER_CONFIG_FILE ?= $(MKFILE_DIR)/super-config.env
 SUPER_SETTINGS ?=
-EXTRA_ENV_VARS = $(foreach var,$(SUPER_SETTINGS),-e $(var))
+EXTRA_ENV_VARS = $(foreach var,$(SUPER_SETTINGS),-e "$(var)")
 LOCAL_ENV_FILE ?= $(shell find $(PWD) -name 'super-config.env' -type f)
 ifneq ($(LOCAL_ENV_FILE),)
 	EXTRA_ENV_VARS += --env-file $(LOCAL_ENV_FILE)
@@ -38,7 +38,6 @@ SUPER_CONFIG := $(shell mktemp -d)
 lint-super:
 	@find $(MKFILE_DIR)/..  -depth 1 -type f -exec cp {} $(SUPER_CONFIG)/ \;
 	@find $(PWD) -depth 1 -type f -exec cp {} $(SUPER_CONFIG)/ \;
-	ls -la $(SUPER_CONFIG)
 	docker run --rm --platform linux/amd64 \
 		-v $(PWD):/tmp/lint -v $(SUPER_CONFIG):/tmp/config:ro \
 		-v super-linter-cache:/root/.cache \
