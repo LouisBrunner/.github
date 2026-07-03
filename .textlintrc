@@ -1,0 +1,7 @@
+{
+	"rules": {
+		"terminology": {
+			"exclude": ["to-?do(s)?(?=[ ,.])"]
+		}
+	}
+}
