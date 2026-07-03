@@ -68,12 +68,16 @@ SHELL_EXTRA_FILES += $(SHELL_NO_EXT_FILES)
 SC_FILES += $(SHELL_NO_EXT_FILES)
 SHELL_EXTRA_FILES_S = $(strip $(SHELL_EXTRA_FILES))
 SC_FILES_S = $(strip $(SC_FILES))
+ZSH_EXT_FILES = $(shell find . -name '*.zsh' -type f)
+ZSH_SHEBANG_FILES = $(shell find . -type f ! -name '*.zsh' -exec sh -c 'head -n1 "$$1" 2>/dev/null | grep -qE "^\#!.*zsh"' sh {} \; -print)
+ZSH_FILES_S = $(strip $(ZSH_EXT_FILES) $(ZSH_SHEBANG_FILES))
 
 .PHONY: lint-sh
 lint-sh:
 	shfmt --diff .
 	test -z "$(SHELL_EXTRA_FILES_S)" || shfmt --language-dialect bash --diff $(SHELL_EXTRA_FILES_S)
 	test -z "$(SC_FILES_S)" || SHELLCHECK_OPTS="$(SHELLCHECK_OPTS)" shellcheck $(SC_FILES_S)
+	test -z "$(ZSH_FILES_S)" || for f in $(ZSH_FILES_S); do zsh -n "$$f" || exit 1; done
 
 .PHONY: format-sh
 format-sh:

@@ -75,3 +75,18 @@ jobs:
           version: ${{ inputs.shellcheck-version }}
           additional_files: ${{ steps.extra.outputs.suffixes }}
           check_together: true
+
+      - name: Check syntax (zsh -n)
+        env:
+          SEARCH_PATH: ${{ inputs.path }}
+        run: |
+          by_ext=$(find "$SEARCH_PATH" -name "*.zsh" -type f -print0 | tr '\0' ' ')
+          by_shebang=""
+          while IFS= read -r -d '' file; do
+            if head -n1 "$file" | grep -qE '^#!.*zsh'; then
+              by_shebang="$by_shebang $file"
+            fi
+          done < <(find "$SEARCH_PATH" -type f ! -name "*.zsh" -print0)
+          files=$(echo "$by_ext $by_shebang" | tr ' ' '\n' | sort -u | grep -v '^$' | tr '\n' ' ')
+          read -ra farr <<< "$files"
+          test -z "$files" || for f in "${farr[@]}"; do zsh -n "$f"; done
