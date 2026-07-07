@@ -66,7 +66,22 @@ jobs:
           read -ra extra <<< "$EXTRA_FILES"
           test -z "${extra[@]}" || shfmt --language-dialect bash --diff "${extra[@]}"
 
+      - name: Check for files to lint
+        id: check
+        env:
+          SEARCH_PATH: ${{ inputs.path }}
+          EXTRA_FILES: ${{ steps.extra.outputs.files }}
+        run: |
+          sh_file=$(find "$SEARCH_PATH" -type f -name "*.sh" -print -quit)
+          if [ -z "$sh_file" ] && [ -z "$EXTRA_FILES" ]; then
+            echo "No shell script files found to lint under '$SEARCH_PATH', skipping shellcheck"
+            echo "has_files=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_files=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Lint (shellcheck)
+        if: steps.check.outputs.has_files == 'true'
         uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # 2.0.0
         env:
           SHELLCHECK_OPTS: ${{ inputs.shellcheck-options }}
