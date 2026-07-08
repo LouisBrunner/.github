@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
 name: Report test results
 description: >
   Publish JUnit XML and/or Cobertura XML reports as GitHub check annotations.

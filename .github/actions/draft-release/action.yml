@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
 name: Draft release
 description: >
   Create a GitHub draft release for the given version if that tag does not already

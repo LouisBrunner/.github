@@ -1,0 +1,78 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Build & Deploy Bun project to GitHub Pages
+
+on:
+  workflow_call:
+    inputs:
+      bun-version:
+        description: "Bun version to use"
+        type: string
+        default: ""
+      run:
+        description: "Command to run (empty = default: bun install + bun run build)."
+        type: string
+        default: ""
+      path:
+        description: "Directory to upload as the Pages artifact"
+        type: string
+        default: "dist"
+      jekyll:
+        description: "Whether to build the output with Jekyll before uploading"
+        type: boolean
+        default: false
+    outputs:
+      url:
+        description: "URL of the deployed GitHub Pages site"
+        value: ${{ jobs.deploy.outputs.url }}
+
+permissions: {}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Bun
+        uses: LouisBrunner/.github/.github/actions/setup-bun@main
+        with:
+          bun-version: ${{ inputs.bun-version }}
+
+      - name: Build
+        shell: bash
+        env:
+          CUSTOM_RUN: ${{ inputs.run }}
+        run: |
+          if [ -n "$CUSTOM_RUN" ]; then
+            # FIXME: eval... need to be careful with those
+            eval "$CUSTOM_RUN"
+          else
+            bun install
+            bun run build
+          fi
+
+      - name: Build with Jekyll
+        if: inputs.jekyll
+        uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697 # v1.0.13
+
+      - name: Upload Pages artifact
+        uses: LouisBrunner/.github/.github/actions/upload-pages@main
+        with:
+          path: ${{ inputs.path }}
+
+  deploy:
+    name: Deploy
+    needs: [build]
+    if: github.ref_name == 'main'
+    permissions:
+      pages: write
+      id-token: write
+    uses: LouisBrunner/.github/.github/workflows/deploy-pages.yml@main

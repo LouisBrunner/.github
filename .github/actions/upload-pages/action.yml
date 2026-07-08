@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
 name: Upload GitHub Pages artifact
 description: >
   Configure Pages and upload a directory as the GitHub Pages deployment artifact.
