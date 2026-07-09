@@ -32,6 +32,12 @@ SUPER_DEBUG ?= false
 ifeq ($(SUPER_DEBUG),true)
 	EXTRA_ENV_VARS += -e LOG_LEVEL=DEBUG
 endif
+WITH_RUST ?= false
+ifeq ($(WITH_RUST),true)
+	SUPER_LINTER_IMAGE ?= ghcr.io/super-linter/super-linter:v8.7.0
+else
+	SUPER_LINTER_IMAGE ?= ghcr.io/super-linter/super-linter:slim-v8.7.0
+endif
 SUPER_CONFIG := $(shell mktemp -d)
 
 .PHONY: lint-super
@@ -43,7 +49,7 @@ lint-super:
 		-v super-linter-cache:/root/.cache \
 		-e RUN_LOCAL=true -e DEFAULT_BRANCH=main -e LINTER_RULES_PATH=../config \
 		--env-file $(SUPER_LINTER_CONFIG_FILE) $(EXTRA_ENV_VARS) \
-		ghcr.io/super-linter/super-linter:slim-v8.7.0
+		$(SUPER_LINTER_IMAGE)
 	rm -rf $(SUPER_CONFIG)
 
 # TOML
