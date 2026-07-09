@@ -37,6 +37,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
+      packages: write
     steps:
       - name: Checkout and set up Go
         uses: LouisBrunner/.github/.github/actions/checkout-go@main
