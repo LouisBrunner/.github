@@ -2,5 +2,4 @@
 
 MD013:
   line_length: 200
-  tables: true
-  code_blocks: true
+  tables: false
