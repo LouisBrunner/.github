@@ -12,6 +12,10 @@ on:
         description: "Lint command to run (empty = default: gofmt + vet + staticcheck)."
         type: string
         default: ""
+      generate:
+        description: "Run go generate before linting."
+        type: boolean
+        default: false
       runs-on:
         description: "The runner to use for this job."
         type: string
@@ -30,6 +34,11 @@ jobs:
         uses: LouisBrunner/.github/.github/actions/checkout-go@main
         with:
           go-version-file: ${{ inputs.go-version-file }}
+
+      - name: Generate
+        if: ${{ inputs.generate }}
+        shell: bash
+        run: go generate ./...
 
       - name: Vet
         shell: bash
