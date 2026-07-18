@@ -41,6 +41,26 @@ jobs:
           FILES=$(git ls-files "$INPUT_PATH" | grep -E '\.(jsonc?|[mc]?[tj]sx?|s?[ca]ss|html)$' | head -1 || true)
           echo "found=$([ -n "$FILES" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
+      - name: Check for package.json
+        id: has-package
+        if: ${{ steps.has-files.outputs.found == 'true' }}
+        shell: bash
+        env:
+          INPUT_PATH: ${{ inputs.path }}
+        run: |
+          echo "found=$([ -f "$INPUT_PATH/package.json" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Bun
+        if: ${{ steps.has-package.outputs.found == 'true' }}
+        uses: LouisBrunner/.github/.github/actions/setup-bun@main
+
+      - name: Install dependencies
+        if: ${{ steps.has-package.outputs.found == 'true' }}
+        shell: bash
+        env:
+          INPUT_PATH: ${{ inputs.path }}
+        run: bun install --cwd "$INPUT_PATH"
+
       - name: Lint and format
         if: ${{ steps.has-files.outputs.found == 'true' }}
         env:
