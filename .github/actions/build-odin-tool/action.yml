@@ -1,6 +1,8 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-action.json
 name: Build Odin tool
-description: Clone an Odin tool's repository and build a binary from it onto /usr/local/bin, cached by ref. Caller must set up Odin first.
+description: >
+  Clone an Odin tool's repository and build a binary from it onto /usr/local/bin, cached by ref.
+  Caller must set up Odin first.
 
 inputs:
   url:
@@ -37,7 +39,11 @@ runs:
         TOOL_BUILD_ARGS: ${{ inputs.build-args }}
       with:
         path: /usr/local/bin/${{ inputs.binary-name }}
-        key: odin-tool-${{ runner.os }}-${{ inputs.binary-name }}-${{ inputs.url }}-${{ inputs.ref }}-${{ inputs.cache-key-extra }}
+        key: >-
+          odin-tool
+          -${{ runner.os }}
+          -${{ inputs.binary-name }}-${{ inputs.url }}-${{ inputs.ref }}
+          -${{inputs.cache-key-extra }}
         run: |
           clone_dir="$(mktemp -d)"
           git clone --depth 1 --branch "$TOOL_REF" "$TOOL_URL" "$clone_dir"
