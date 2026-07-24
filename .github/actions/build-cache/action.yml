@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
+name: Build with cache
+description: Run a build command and cache its output path, skipping the build on a cache hit.
+
+inputs:
+  path:
+    description: "Path to build and cache (also used to check for a cache hit)"
+    required: true
+  key:
+    description: "Cache key"
+    required: true
+  run:
+    description: "Command to run to (re)produce the path when the cache misses"
+    required: true
+
+outputs:
+  cache-hit:
+    description: "Whether the cache was hit"
+    value: ${{ steps.cache.outputs.cache-hit }}
+
+runs:
+  using: composite
+  steps:
+    - name: Cache
+      id: cache
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ${{ inputs.path }}
+        key: ${{ inputs.key }}
+
+    - name: Build
+      if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+      shell: bash
+      env:
+        CUSTOM_RUN: ${{ inputs.run }}
+      run: |
+        # FIXME: eval... need to be careful with those
+        eval "$CUSTOM_RUN"
