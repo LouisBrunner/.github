@@ -171,3 +171,14 @@ lint-bun:
 .PHONY: format-bun
 format-bun:
 			bun run format:fix
+
+# Odin
+.PHONY: lint-odin
+lint-odin:
+	odinfmt -w .
+	git diff --exit-code -- '*.odin'
+	odin check . -vet -strict-style -vet-tabs -disallow-do -warnings-as-errors
+
+.PHONY: format-odin
+format-odin:
+	odinfmt -w .
