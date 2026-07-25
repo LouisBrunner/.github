@@ -16,6 +16,10 @@ on:
         description: "Run go generate before linting."
         type: boolean
         default: false
+      setup:
+        description: "Command to run before linting (empty = skip)."
+        type: string
+        default: ""
       runs-on:
         description: "The runner to use for this job."
         type: string
@@ -39,6 +43,15 @@ jobs:
         if: ${{ inputs.generate }}
         shell: bash
         run: go generate ./...
+
+      - name: Setup
+        if: ${{ inputs.setup != '' }}
+        shell: bash
+        env:
+          CUSTOM_SETUP: ${{ inputs.setup }}
+        run: |
+          # FIXME: eval... need to be careful with those
+          eval "$CUSTOM_SETUP"
 
       - name: Vet
         shell: bash

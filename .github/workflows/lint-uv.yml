@@ -12,6 +12,10 @@ on:
         description: "Lint command to run (empty = default: ruff check + format + ty check)."
         type: string
         default: ""
+      setup:
+        description: "Command to run before linting (empty = skip)."
+        type: string
+        default: ""
 
 permissions: {}
 
@@ -36,6 +40,15 @@ jobs:
       - name: Sync dependencies
         shell: bash
         run: uv sync --all-packages
+
+      - name: Setup
+        if: ${{ inputs.setup != '' }}
+        shell: bash
+        env:
+          CUSTOM_SETUP: ${{ inputs.setup }}
+        run: |
+          # FIXME: eval... need to be careful with those
+          eval "$CUSTOM_SETUP"
 
       - name: Vet
         shell: bash

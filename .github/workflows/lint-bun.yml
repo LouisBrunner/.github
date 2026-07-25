@@ -12,6 +12,10 @@ on:
         description: "Lint command to run (empty = default: bun run lint:ci)."
         type: string
         default: ""
+      setup:
+        description: "Command to run before linting (empty = skip)."
+        type: string
+        default: ""
 
 permissions: {}
 
@@ -34,6 +38,15 @@ jobs:
 
       - name: Install dependencies
         run: bun install
+
+      - name: Setup
+        if: ${{ inputs.setup != '' }}
+        shell: bash
+        env:
+          CUSTOM_SETUP: ${{ inputs.setup }}
+        run: |
+          # FIXME: eval... need to be careful with those
+          eval "$CUSTOM_SETUP"
 
       - name: Vet
         shell: bash

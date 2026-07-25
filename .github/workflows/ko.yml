@@ -24,6 +24,10 @@ on:
         description: "Command to run after setup (empty = skip)."
         type: string
         default: ""
+      setup:
+        description: "Command to run before building/pushing (empty = skip)."
+        type: string
+        default: ""
     secrets:
       registry-password:
         description: "Password or token for the container registry."

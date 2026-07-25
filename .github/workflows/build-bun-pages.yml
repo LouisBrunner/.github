@@ -12,6 +12,10 @@ on:
         description: "Command to run (empty = default: bun install + bun run build)."
         type: string
         default: ""
+      setup:
+        description: "Command to run before building (empty = skip)."
+        type: string
+        default: ""
       path:
         description: "Directory to upload as the Pages artifact"
         type: string
@@ -45,6 +49,15 @@ jobs:
         uses: LouisBrunner/.github/.github/actions/setup-bun@main
         with:
           bun-version: ${{ inputs.bun-version }}
+
+      - name: Setup
+        if: ${{ inputs.setup != '' }}
+        shell: bash
+        env:
+          CUSTOM_SETUP: ${{ inputs.setup }}
+        run: |
+          # FIXME: eval... need to be careful with those
+          eval "$CUSTOM_SETUP"
 
       - name: Build
         shell: bash

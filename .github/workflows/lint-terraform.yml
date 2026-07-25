@@ -24,6 +24,10 @@ on:
         description: "Lint command to run (empty = default: terragrunt hclfmt + terraform fmt)."
         type: string
         default: ""
+      setup:
+        description: "Command to run before linting (empty = skip)."
+        type: string
+        default: ""
 
 permissions: {}
 
@@ -49,6 +53,15 @@ jobs:
         uses: autero1/action-terragrunt@aefb0a43c4f5503a91fefb307745c4d51c26ed0e # v3.0.2
         with:
           terragrunt-version: ${{ inputs.terragrunt-version }}
+
+      - name: Setup
+        if: ${{ inputs.setup != '' }}
+        shell: bash
+        env:
+          CUSTOM_SETUP: ${{ inputs.setup }}
+        run: |
+          # FIXME: eval... need to be careful with those
+          eval "$CUSTOM_SETUP"
 
       - name: Lint
         shell: bash
