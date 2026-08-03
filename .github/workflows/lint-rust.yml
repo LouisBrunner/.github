@@ -8,6 +8,10 @@ on:
         description: "Rust toolchain to use (e.g. 'stable', 'nightly', '1.80.0')"
         type: string
         default: "stable"
+      working-directory:
+        description: "Directory containing the crate to lint (default: repo root)"
+        type: string
+        default: "."
       run:
         description: "Lint command to run (empty = default: cargo fmt --check + cargo clippy)."
         type: string
@@ -25,6 +29,9 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
     steps:
       - name: Checkout the repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
