@@ -1,3 +1,4 @@
 go.sum linguist-generated text -diff
 uv.lock linguist-generated text -diff
 bun.lock linguist-generated text -diff
+Cargo.lock linguist-generated text -diff
