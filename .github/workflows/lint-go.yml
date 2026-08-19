@@ -60,6 +60,10 @@ jobs:
           # FIXME: eval... need to be careful with those
           eval "$CUSTOM_SETUP"
 
+      - name: Audit dependencies
+        shell: bash
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.7.0 ./...
+
       - name: Vet
         shell: bash
         env:

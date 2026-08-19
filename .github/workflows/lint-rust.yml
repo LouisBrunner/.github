@@ -44,6 +44,11 @@ jobs:
           toolchain: ${{ inputs.toolchain }}
           components: rustfmt, clippy
 
+      - name: Set up cargo-audit
+        uses: taiki-e/install-action@5b4d68e2e660441203ab128a23676f1e4faf1532 # v2.86.3
+        with:
+          tool: cargo-audit@0.22.2
+
       - name: Setup
         if: ${{ inputs.setup != '' }}
         shell: bash
@@ -52,6 +57,10 @@ jobs:
         run: |
           # FIXME: eval... need to be careful with those
           eval "$CUSTOM_SETUP"
+
+      - name: Audit dependencies
+        shell: bash
+        run: cargo audit
 
       - name: Vet
         shell: bash
