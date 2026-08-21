@@ -27,11 +27,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Biome
-        uses: biomejs/setup-biome@4c91541eaada48f67d7dbd7833600ce162b68f51 # v2.7.1
-        with:
-          version: ${{ inputs.version }}
-
       - name: Check for files
         id: has-files
         shell: bash
@@ -50,6 +45,12 @@ jobs:
         run: |
           echo "found=$([ -f "$INPUT_PATH/package.json" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
+      - name: Set up Biome
+        if: ${{ steps.has-package.outputs.found != 'true' }}
+        uses: biomejs/setup-biome@4c91541eaada48f67d7dbd7833600ce162b68f51 # v2.7.1
+        with:
+          version: ${{ inputs.version }}
+
       - name: Set up Bun
         if: ${{ steps.has-package.outputs.found == 'true' }}
         uses: LouisBrunner/.github/.github/actions/setup-bun@main
@@ -63,6 +64,13 @@ jobs:
 
       - name: Lint and format
         if: ${{ steps.has-files.outputs.found == 'true' }}
+        shell: bash
         env:
           INPUT_PATH: ${{ inputs.path }}
-        run: biome ci "$INPUT_PATH"
+          HAS_PACKAGE: ${{ steps.has-package.outputs.found }}
+        run: |
+          if [ "$HAS_PACKAGE" = "true" ]; then
+            (cd "$INPUT_PATH" && bunx --bun biome ci .)
+          else
+            biome ci "$INPUT_PATH"
+          fi
