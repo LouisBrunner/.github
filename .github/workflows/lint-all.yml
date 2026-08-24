@@ -64,7 +64,7 @@ jobs:
       actions: read
     uses: LouisBrunner/.github/.github/workflows/skip-check.yml@main
     with:
-      paths: '["**/*.sh"]'
+      paths: '["**/*.sh", "**/*.zsh"]'
 
   # TODO: super handles it but with wrong files
   sh:

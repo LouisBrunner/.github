@@ -91,6 +91,7 @@ jobs:
           version: ${{ inputs.shellcheck-version }}
           additional_files: ${{ steps.extra.outputs.suffixes }}
           check_together: true
+          ignore_names: "*.zsh"
 
       - name: Check syntax (zsh -n)
         env:
