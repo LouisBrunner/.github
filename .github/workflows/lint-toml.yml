@@ -24,7 +24,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up Tombi
-        uses: tombi-toml/setup-tombi@ea139001852855a7f1cf30a9b60c71ebb6446a99 # v1.5.5
+        uses: tombi-toml/setup-tombi@2a4ab856017ecce1511302ed241f571d1230a1d8 # v1.7.0
         with:
           version: ${{ inputs.tombi-version }}
           enable-cache: true
