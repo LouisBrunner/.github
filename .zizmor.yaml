@@ -1,5 +1,8 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/woodruffw/zizmor/main/support/zizmor.schema.json
 rules:
+  # TODO: re-enable once actionlint supports `$/` (rhysd/actionlint#711)
+  self-repository:
+    disable: true
   unpinned-uses:
     config:
       policies:
