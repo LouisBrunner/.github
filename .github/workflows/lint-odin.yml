@@ -35,12 +35,12 @@ jobs:
       contents: read
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
 
       - name: Set up Odin
-        uses: laytan/setup-odin@8536d8fa450ec6f1bd9ddc84bbaaf16296c0051d # v2.12.2
+        uses: laytan/setup-odin@v2.12.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release: ${{ inputs.odin-release }}

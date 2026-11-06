@@ -34,18 +34,18 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # no tags
+        uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: ${{ inputs.toolchain }}
           components: rustfmt, clippy
 
       - name: Set up cargo-audit
-        uses: taiki-e/install-action@86f7a0ffb25f40114606501a311ebcfaf882ea32 # v2.88.0
+        uses: taiki-e/install-action@v2.88.0
         with:
           tool: cargo-audit@0.22.2
 

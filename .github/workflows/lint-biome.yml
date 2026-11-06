@@ -23,7 +23,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
 
@@ -47,7 +47,7 @@ jobs:
 
       - name: Set up Biome
         if: ${{ steps.has-package.outputs.found != 'true' }}
-        uses: biomejs/setup-biome@4c91541eaada48f67d7dbd7833600ce162b68f51 # v2.7.1
+        uses: biomejs/setup-biome@v2.7.1
         with:
           version: ${{ inputs.version }}
 
