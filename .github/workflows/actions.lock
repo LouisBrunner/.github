@@ -11,7 +11,7 @@ workflows:
     '.github/workflows/deploy-pages.yml':
         - 'actions/deploy-pages@v5.0.1'
     '.github/workflows/ko.yml':
-        - 'docker/login-action@v4.7.0'
+        - 'docker/login-action@v4.8.0'
         - 'ko-build/setup-ko@v0.10'
         - 'louisbrunner/.github@main'
     '.github/workflows/lint-all.yml': []
@@ -33,7 +33,7 @@ workflows:
     '.github/workflows/lint-rust.yml':
         - 'actions/checkout@v7.0.1'
         - 'dtolnay/rust-toolchain@v1'
-        - 'taiki-e/install-action@v2.88.0'
+        - 'taiki-e/install-action@v2.90.1'
     '.github/workflows/lint-sh.yml':
         - 'actions/checkout@v7.0.1'
         - 'ludeeus/action-shellcheck@2.0.0'
@@ -47,7 +47,7 @@ workflows:
         - 'hashicorp/setup-terraform@v4.0.1'
     '.github/workflows/lint-toml.yml':
         - 'actions/checkout@v7.0.1'
-        - 'tombi-toml/setup-tombi@v1.9.8'
+        - 'tombi-toml/setup-tombi@v1.10.0'
     '.github/workflows/lint-uv.yml':
         - 'actions/checkout@v7.0.1'
         - 'astral-sh/setup-uv@v10.3.3'
@@ -119,9 +119,9 @@ dependencies:
         commit: 'sha1-4c91541eaada48f67d7dbd7833600ce162b68f51'
         owner_id: 140182603
         repo_id: 693772387
-    'docker/login-action@v4.7.0':
-        ref: 'v4.7.0'
-        commit: 'sha1-81c6f93d4bc991e510b342a00b419b3bb4efc5c6'
+    'docker/login-action@v4.8.0':
+        ref: 'v4.8.0'
+        commit: 'sha1-8aa5831fb8d48d8f76594c7ddde61ae58019f550'
         owner_id: 5429470
         repo_id: 287743349
     'dtolnay/rust-toolchain@v1':
@@ -186,13 +186,13 @@ dependencies:
         commit: 'sha1-2da136927bd4a73596db63044b504547c62cb854'
         owner_id: 74564708
         repo_id: 216581567
-    'taiki-e/install-action@v2.88.0':
-        ref: 'v2.88.0'
-        commit: 'sha1-86f7a0ffb25f40114606501a311ebcfaf882ea32'
+    'taiki-e/install-action@v2.90.1':
+        ref: 'v2.90.1'
+        commit: 'sha1-c509219cf42fba86913069efd0ade2458c59337b'
         owner_id: 43724913
         repo_id: 442947557
-    'tombi-toml/setup-tombi@v1.9.8':
-        ref: 'v1.9.8'
-        commit: 'sha1-88295e71426671820b98934ea75ea352d73eba8b'
+    'tombi-toml/setup-tombi@v1.10.0':
+        ref: 'v1.10.0'
+        commit: 'sha1-336fd5f0db887ebf637389a659b4193608756ecd'
         owner_id: 192336641
         repo_id: 980084562
