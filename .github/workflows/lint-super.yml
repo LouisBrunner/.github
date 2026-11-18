@@ -41,11 +41,16 @@ jobs:
             .jscpd.json
             .markdown-lint.yaml
             .yaml-lint.yaml
-            .zizmor.yaml
             .textlintrc
           )
+          if [ -f .github/workflows/actions.lock ]; then
+            TO_COPY+=(.zizmor.yaml)
+          else
+            TO_COPY+=(.zizmor.legacy.yaml)
+          fi
           for file in "${TO_COPY[@]}"; do
-            [ -f "$file" ] || curl -fsSL "$BASE_URL/$file" -o "$file"
+            clean_file="${file/.legacy/}"
+            [ -f "$clean_file" ] || curl -fsSL "$BASE_URL/$file" -o "$clean_file"
           done
           [ -f .github/super-linter.env ] && cat .github/super-linter.env >> "$GITHUB_ENV" || true
 
