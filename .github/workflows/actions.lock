@@ -33,7 +33,7 @@ workflows:
     '.github/workflows/lint-rust.yml':
         - 'actions/checkout@v7.0.1'
         - 'dtolnay/rust-toolchain@v1'
-        - 'taiki-e/install-action@v2.90.3'
+        - 'taiki-e/install-action@v2.90.6'
     '.github/workflows/lint-sh.yml':
         - 'actions/checkout@v7.0.1'
         - 'ludeeus/action-shellcheck@2.0.0'
@@ -47,10 +47,10 @@ workflows:
         - 'hashicorp/setup-terraform@v4.0.1'
     '.github/workflows/lint-toml.yml':
         - 'actions/checkout@v7.0.1'
-        - 'tombi-toml/setup-tombi@v1.11.2'
+        - 'tombi-toml/setup-tombi@v1.11.3'
     '.github/workflows/lint-uv.yml':
         - 'actions/checkout@v7.0.1'
-        - 'astral-sh/setup-uv@v10.3.3'
+        - 'astral-sh/setup-uv@v10.4.0'
     '.github/workflows/skip-check.yml':
         - 'fkirc/skip-duplicate-actions@v5.3.2'
     '.github/workflows/update-tags.yml':
@@ -104,9 +104,9 @@ dependencies:
         repo_id: 496012378
         uses:
             - 'actions/upload-artifact@v4'
-    'astral-sh/setup-uv@v10.3.3':
-        ref: 'v10.3.3'
-        commit: 'sha1-68559e99cc807c1eb7e9238fd43a15bba460eec2'
+    'astral-sh/setup-uv@v10.4.0':
+        ref: 'v10.4.0'
+        commit: 'sha1-1db35dd8eee11c5894872e0b383ae6c406cf738d'
         owner_id: 115962839
         repo_id: 846733598
     'autero1/action-terragrunt@v3.0.2':
@@ -186,13 +186,13 @@ dependencies:
         commit: 'sha1-2da136927bd4a73596db63044b504547c62cb854'
         owner_id: 74564708
         repo_id: 216581567
-    'taiki-e/install-action@v2.90.3':
-        ref: 'v2.90.3'
-        commit: 'sha1-cfdb7ed4ccc7c7dce37759eae89dc5674b469b39'
+    'taiki-e/install-action@v2.90.6':
+        ref: 'v2.90.6'
+        commit: 'sha1-75a7c0f87bd666af3cdb75c5b9e9d03ab6044e6f'
         owner_id: 43724913
         repo_id: 442947557
-    'tombi-toml/setup-tombi@v1.11.2':
-        ref: 'v1.11.2'
-        commit: 'sha1-8ddc6b91b6fa3ad0ce192a68b409930851e4886c'
+    'tombi-toml/setup-tombi@v1.11.3':
+        ref: 'v1.11.3'
+        commit: 'sha1-7417bd6e820cf0d4f89d77b48d13ba5d060435bf'
         owner_id: 192336641
         repo_id: 980084562
